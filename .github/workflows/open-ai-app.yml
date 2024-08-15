@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: Production
+      name: production
 
     steps:
       - name: 🍏 Set up Node.js version
