@@ -25,6 +25,10 @@ interface ChatPageProps {
 }
 
 export const ChatPage: FC<ChatPageProps> = (props) => {
+  if (!props.chatThread || props.messages.length === 0) {
+    return <div>No active chats. Start a new conversation!</div>;
+  }
+
   const { data: session } = useSession();
 
   useEffect(() => {

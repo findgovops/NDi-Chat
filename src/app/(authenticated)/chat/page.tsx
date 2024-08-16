@@ -2,14 +2,15 @@ import { ChatPage } from "@/features/chat-page/chat-page";
 import { FindAllExtensionForCurrentUser } from "@/features/extensions-page/extension-services/extension-service";
 import { FindAllPersonaForCurrentUser } from "@/features/persona-page/persona-services/persona-service";
 import { FindAllChatMessagesForCurrentUser } from "@/features/chat-page/chat-services/chat-message-service";
-import { CreateChatMessage } from "@/features/chat-page/chat-services/chat-message-service";
 import { DisplayError } from "@/features/ui/error/display-error";
-import chatMessageContainer from "@/features/ui/chat/chat-message-area/chat-message-container";
-import chatMessageContent from "@/features/ui/chat/chat-message-area/chat-message-content";
-import { chatStore } from "@/features/chat-page/chat-store";
-import { ChatMessageArea } from "@/features/ui/chat/chat-message-area/chat-message-area";
+import { ServerActionResponse } from "@/features/common/server-action-response";
 import { FindAllChatThreadForCurrentUser } from "@/features/chat-page/chat-services/chat-thread-service";
+import { ChatMessageModel } from "@/features/chat-page/chat-services/models";
+import { ChatDocumentModel } from "@/features/chat-page/chat-services/models";
 import { FindAllChatDocuments } from "@/features/chat-page/chat-services/chat-document-service";
+import { ChatThreadModel } from "@/features/chat-page/chat-services/models";
+import { CHAT_THREAD_ATTRIBUTE } from "@/features/chat-page/chat-services/models";
+
 
 export default async function Home() {
   const [personaResponse, extensionResponse, chatThreadsResponse] = await Promise.all([
@@ -30,25 +31,56 @@ export default async function Home() {
   if (chatThreadsResponse.status !== "OK") {
     return <DisplayError errors={chatThreadsResponse.errors} />;
   }
+  
+  
 
-  // Get the last active thread (first in the list)
-  const lastActiveThread = chatThreadsResponse.response[0]
+  let lastActiveThread = null;
+  let messageResponse: ServerActionResponse<ChatMessageModel[]>;  // Default to empty messages
+  let documentResponse: ServerActionResponse<ChatDocumentModel[]>;
 
-  // Fetch messages for the last active thread
-  const messageResponse = await FindAllChatMessagesForCurrentUser(lastActiveThread.id);
-  const documentResponse = await FindAllChatDocuments(lastActiveThread.id)
+  if (chatThreadsResponse.response.length > 0) {
+    // Get the last active thread (first in the list)
+    lastActiveThread = chatThreadsResponse.response[0];
 
-  if (messageResponse.status !== "OK") {
-    return <DisplayError errors={messageResponse.errors} />;
+    // Fetch messages for the last active thread
+    messageResponse = await FindAllChatMessagesForCurrentUser(lastActiveThread.id);
+    documentResponse = await FindAllChatDocuments(lastActiveThread.id)
+    
+
+    if (messageResponse.status !== "OK") {
+      return <DisplayError errors={messageResponse.errors} />;
+    }
+
+    if (documentResponse.status !== "OK") {
+      return <DisplayError errors={documentResponse.errors} />;
+    }
+  }else {
+    // If no threads are found, set a default empty response
+    messageResponse = { status: "OK", response: [] };
+    documentResponse = { status: "OK", response: [] };
   }
 
-  if (documentResponse.status !== "OK") {
-    return <DisplayError errors={documentResponse.errors} />;
-  }
+  const defaultChatThread: ChatThreadModel = {
+    // Populate with default values that satisfy ChatThreadModel
+    id: "",
+    name: "No Active Thread",
+    createdAt: new Date(),
+    lastMessageAt: new Date(),
+    userId: "",
+    useName: "",
+    isDeleted: false ,
+    bookmarked: false,
+    personaMessage: "",
+    personaMessageTitle: "",
+    extension: [],
+    type: CHAT_THREAD_ATTRIBUTE,
+  };
+
+  
   return (
     <ChatPage
       messages={messageResponse.response}
-      chatThread={lastActiveThread}
+      chatThread={lastActiveThread || defaultChatThread}
       chatDocuments={documentResponse.response}
       extensions={extensionResponse.response}
     />
