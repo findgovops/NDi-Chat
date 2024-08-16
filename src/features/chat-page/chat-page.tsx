@@ -13,6 +13,7 @@ import { ChatHeader } from "./chat-header/chat-header";
 import { CreateChatThread} from "./chat-services/chat-thread-service";
 import { CreateChatMessage } from "./chat-services/chat-message-service";
 import { ChatRole } from "@/features/chat-page/chat-services/models";
+import { UploadImageToStore, GetImageUrl } from "./chat-services/chat-image-service";
 import {
   ChatDocumentModel,
   ChatMessageModel,
@@ -46,7 +47,7 @@ export const ChatPage: FC<ChatPageProps> = (props) => {
 
   useChatScrollAnchor({ ref: current });
 
-  const handleSendMessage = async (messageContent: string): Promise<void> => {
+  const handleSendMessage = async (messageContent: string, imageData?: Buffer | null, imageName?: string | null): Promise<void> => {
     let thread = currentThread;
 
     // If there's no valid chat thread, create a new one
@@ -63,13 +64,27 @@ export const ChatPage: FC<ChatPageProps> = (props) => {
       }
     }
 
+    let multiModalImageUrl: string | undefined = undefined;
+
+    // If there's image data, upload it
+    if (imageData && imageName) {
+        const uploadResponse = await UploadImageToStore(thread.id, imageName, imageData);
+        if (uploadResponse.status === "OK") {
+            multiModalImageUrl = GetImageUrl(thread.id, imageName); // Get the URL of the uploaded image
+        } else {
+            console.error("Failed to upload image:", uploadResponse.errors);
+            return;
+        }
+    }
+
+
     // Create the new message associated with the current (or new) thread
     const messageResponse = await CreateChatMessage({
       name: session?.user?.name || "Unknown",
       role: "user", // Use the correct value from ChatRole or a string directly if it's not an enum
       content: messageContent,
       chatThreadId: thread.id,
-      multiModalImage: undefined,
+      multiModalImage: multiModalImageUrl,
     });
 
     if (messageResponse.status !== "OK") {

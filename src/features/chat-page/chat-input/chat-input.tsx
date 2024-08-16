@@ -19,7 +19,7 @@ import { ImageInput } from "@/features/ui/chat/chat-input-area/image-input";
 import { Microphone } from "@/features/ui/chat/chat-input-area/microphone";
 import { StopChat } from "@/features/ui/chat/chat-input-area/stop-chat";
 import { SubmitChat } from "@/features/ui/chat/chat-input-area/submit-chat";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { chatStore, useChat } from "../chat-store";
 import { fileStore, useFileStore } from "./file/file-store";
 import { PromptSlider } from "./prompt/prompt-slider";
@@ -33,7 +33,7 @@ import {
 } from "./speech/use-text-to-speech";
 
 interface ChatInputProps {
-  onSendMessage: (messageContent: string) => Promise<void>;
+  onSendMessage: (messageContent: string, imageData?: Buffer | null, imageName?: string | null ) => Promise<void>;
 }
 
 export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
@@ -43,15 +43,36 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
   const { isMicrophoneReady } = useSpeechToText();
   const { rows } = useChatInputDynamicHeight();
 
+  const [imageData, setImageData] = useState<Buffer | null>(null);
+  const [imageName, setImageName] = useState<string | null>(null);
+
   const submitButton = React.useRef<HTMLButtonElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.result) {
+          const arrayBuffer = reader.result as ArrayBuffer;
+          const buffer = Buffer.from(arrayBuffer);
+          setImageData(buffer); // Store the image data buffer
+          setImageName(file.name); // Store the image name
+        }
+      };
+      reader.readAsArrayBuffer(file); // Read the file as an ArrayBuffer
+    }
+  };
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (input.trim()) {
-      await chatStore.submitChat(e, input);
-      chatStore.updateInput(""); // Clear the input field after sending
-      ResetInputRows(); // Reset input rows
+        await onSendMessage(input, imageData, imageName);
+        chatStore.updateInput(""); // Clear the input field after sending
+        ResetInputRows(); // Reset input rows
+        setImageData(null); // Clear the image data after sending
+        setImageName(null); // Clear the image name after sending
     }
   };
 
@@ -87,6 +108,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
             }
           />
           <PromptSlider />
+          <input type="file" accept="image/*" onChange={handleFileChange} />
         </ChatInputSecondaryActionArea>
         <ChatInputPrimaryActionArea>
           <ImageInput />
