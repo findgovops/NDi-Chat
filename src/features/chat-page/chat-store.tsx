@@ -13,6 +13,7 @@ import { RevalidateCache } from "../common/navigation-helpers";
 import { InputImageStore } from "../ui/chat/chat-input-area/input-image-store";
 import { textToSpeechStore } from "./chat-input/speech/use-text-to-speech";
 import { ResetInputRows } from "./chat-input/use-chat-input-dynamic-height";
+import { UploadImageToStore, GetImageUrl } from "./chat-services/chat-image-service";
 import {
   AddExtensionToChatThread,
   CreateChatThread,
@@ -285,37 +286,40 @@ class ChatState {
     textToSpeechStore.speak(message);
   }
 
-  public async submitChat(e: FormEvent<HTMLFormElement>, customInput?: string) {
+  public async submitChat(e: FormEvent<HTMLFormElement>, imageData?: Buffer | null, imageName?: string | null) {
     e.preventDefault();
+    const input = this.input.trim();
 
-    const inputContent = customInput || this.input;
-
-    if (inputContent === "" || this.loading !== "idle") {
+    if (input === "" || this.loading !== "idle") {
       return;
     }
 
-    // If there's no valid chat thread, create a new one
-    if (!this.chatThread || !this.chatThreadId) {
-      const response = await CreateChatThread(); // Create a new thread
-      if (response.status === "OK") {
-        this.updateCurrentThread(response.response);
-      } else {
-        showError("Failed to create chat thread: " + response.errors.join(", "));
-        return;
-      }
+    let multiModalImageUrl: string | undefined = undefined;
+
+    // If there's image data, upload it
+    if (imageData && imageName) {
+        const response = await UploadImageToStore(this.chatThreadId, imageName, imageData);
+        if (response.status === "OK") {
+            multiModalImageUrl = GetImageUrl(this.chatThreadId, imageName); // Get the URL of the uploaded image
+        } else {
+            console.error("Failed to upload image:", response.errors);
+            return;
+        }
     }
 
-    // get form data from e
+    // Prepare the message content with the image URL if available
     const formData = new FormData(e.currentTarget);
     const body = JSON.stringify({
       id: this.chatThreadId,
-      message: inputContent,
+      message: input,
+      multiModalImage: multiModalImageUrl,
     });
     formData.append("content", body);
 
     // Continue with the existing chat logic
     this.chat(formData);
-  }
+    this.updateInput(""); // Clear the input field after sending
+}
 }
 
 export const chatStore = proxy(new ChatState());

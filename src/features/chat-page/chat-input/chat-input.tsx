@@ -68,7 +68,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (input.trim()) {
-        await onSendMessage(input, imageData, imageName);
+        await chatStore.submitChat(e, imageData, imageName)
         chatStore.updateInput(""); // Clear the input field after sending
         ResetInputRows(); // Reset input rows
         setImageData(null); // Clear the image data after sending
