@@ -294,6 +294,18 @@ class ChatState {
       return;
     }
 
+    if (!this.chatThreadId) {
+      console.error("No chat thread ID available. Creating a new thread...");
+      const response = await CreateChatThread(); // Replace with your actual thread creation logic
+      if (response.status === "OK") {
+          this.updateCurrentThread(response.response);
+          console.log("New chat thread ID:", this.chatThreadId);
+      } else {
+          console.error("Failed to create chat thread:", response.errors);
+          return;
+      }
+  }
+
     let multiModalImageUrl: string | undefined = undefined;
 
     // If there's image data, upload it
