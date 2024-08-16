@@ -25,9 +25,6 @@ interface ChatPageProps {
 }
 
 export const ChatPage: FC<ChatPageProps> = (props) => {
-  if (!props.chatThread) {
-    return <div>No active chats. Start a new conversation!</div>;
-  }
 
   const { data: session } = useSession();
 
