@@ -62,7 +62,7 @@ export default async function Home() {
 
   const defaultChatThread: ChatThreadModel = {
     // Populate with default values that satisfy ChatThreadModel
-    id: "0",
+    id: "",
     name: "",
     createdAt: new Date(),
     lastMessageAt: new Date(),

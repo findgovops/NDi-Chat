@@ -7,9 +7,12 @@ import ChatMessageContainer from "@/features/ui/chat/chat-message-area/chat-mess
 import ChatMessageContentArea from "@/features/ui/chat/chat-message-area/chat-message-content";
 import { useChatScrollAnchor } from "@/features/ui/chat/chat-message-area/use-chat-scroll-anchor";
 import { useSession } from "next-auth/react";
-import { FC, useEffect, useRef } from "react";
+import { FC, useEffect, useRef, useState} from "react";
 import { ExtensionModel } from "../extensions-page/extension-services/models";
 import { ChatHeader } from "./chat-header/chat-header";
+import { CreateChatThread} from "./chat-services/chat-thread-service";
+import { CreateChatMessage } from "./chat-services/chat-message-service";
+import { ChatRole } from "@/features/chat-page/chat-services/models";
 import {
   ChatDocumentModel,
   ChatMessageModel,
@@ -27,6 +30,7 @@ interface ChatPageProps {
 export const ChatPage: FC<ChatPageProps> = (props) => {
 
   const { data: session } = useSession();
+  const [currentThread, setCurrentThread] = useState<ChatThreadModel | null>(props.chatThread);
 
   useEffect(() => {
     chatStore.initChatSession({
@@ -41,6 +45,41 @@ export const ChatPage: FC<ChatPageProps> = (props) => {
   const current = useRef<HTMLDivElement>(null);
 
   useChatScrollAnchor({ ref: current });
+
+  const handleSendMessage = async (messageContent: string): Promise<void> => {
+    let thread = currentThread;
+
+    // If there's no valid chat thread, create a new one
+    if (!thread || !thread.id) {
+      const response = await CreateChatThread(); // Create a new thread
+      if (response.status === "OK") {
+        thread = response.response;
+        setCurrentThread(thread);
+        // Update the state/store with the new thread
+        chatStore.updateCurrentThread(thread);
+      } else {
+        console.error("Failed to create chat thread:", response.errors);
+        return;
+      }
+    }
+
+    // Create the new message associated with the current (or new) thread
+    const messageResponse = await CreateChatMessage({
+      name: session?.user?.name || "Unknown",
+      role: "user", // Use the correct value from ChatRole or a string directly if it's not an enum
+      content: messageContent,
+      chatThreadId: thread.id,
+      multiModalImage: undefined,
+    });
+
+    if (messageResponse.status !== "OK") {
+      console.error("Failed to create message:", messageResponse.errors);
+      return;
+    }
+
+    // Update the messages in the state/store
+    chatStore.addMessageToThread(thread.id, messageResponse.response)
+  };
 
   return (
     <main className="flex flex-1 relative flex-col">
@@ -73,7 +112,7 @@ export const ChatPage: FC<ChatPageProps> = (props) => {
           {loading === "loading" && <ChatLoading />}
         </ChatMessageContentArea>
       </ChatMessageContainer>
-      <ChatInput />
+      <ChatInput onSendMessage={handleSendMessage}/>
     </main>
   );
 };

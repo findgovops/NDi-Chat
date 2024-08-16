@@ -37,7 +37,19 @@ class ChatState {
   public chatThreadId: string = "";
 
   private chatThread: ChatThreadModel | undefined;
+  public updateCurrentThread(thread: ChatThreadModel) {
+    this.chatThread = thread;
+    this.chatThreadId = thread.id;
+  }
 
+  // Method to add a message to the current thread
+  public addMessageToThread(threadId: string, message: ChatMessageModel) {
+    if (this.chatThreadId === threadId) {
+      this.messages.push(message);
+    } else {
+      console.error("Thread ID does not match the current chat thread.");
+    }
+  }
   private addToMessages(message: ChatMessageModel) {
     const currentMessage = this.messages.find((el) => el.id === message.id);
     if (currentMessage) {

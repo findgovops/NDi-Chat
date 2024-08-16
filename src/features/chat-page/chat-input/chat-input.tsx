@@ -32,7 +32,11 @@ import {
   useTextToSpeech,
 } from "./speech/use-text-to-speech";
 
-export const ChatInput = () => {
+interface ChatInputProps {
+  onSendMessage: (messageContent: string) => Promise<void>;
+}
+
+export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
   const { loading, input, chatThreadId } = useChat();
   const { uploadButtonLabel } = useFileStore();
   const { isPlaying } = useTextToSpeech();
@@ -42,9 +46,12 @@ export const ChatInput = () => {
   const submitButton = React.useRef<HTMLButtonElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
-  const submit = () => {
-    if (formRef.current) {
-      formRef.current.requestSubmit();
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (input.trim()) {
+      await onSendMessage(input);
+      chatStore.updateInput(""); // Clear the input field after sending
+      ResetInputRows(); // Reset input rows
     }
   };
 
@@ -64,7 +71,7 @@ export const ChatInput = () => {
           }
         }}
         onKeyDown={(e) => {
-          onKeyDown(e, submit);
+          onKeyDown(e, () => formRef.current?.requestSubmit());
         }}
         onKeyUp={(e) => {
           onKeyUp(e);
