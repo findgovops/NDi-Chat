@@ -58,10 +58,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
   return (
     <ChatInputForm
       ref={formRef}
-      onSubmit={(e) => {
-        e.preventDefault();
-        chatStore.submitChat(e);
-      }}
+      onSubmit={submit}
       status={uploadButtonLabel}
     >
       <ChatTextInput
