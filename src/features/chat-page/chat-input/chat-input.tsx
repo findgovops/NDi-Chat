@@ -49,7 +49,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (input.trim()) {
-      await onSendMessage(input);
+      await chatStore.submitChat(e, input);
       chatStore.updateInput(""); // Clear the input field after sending
       ResetInputRows(); // Reset input rows
     }

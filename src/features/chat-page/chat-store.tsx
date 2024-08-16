@@ -15,6 +15,7 @@ import { textToSpeechStore } from "./chat-input/speech/use-text-to-speech";
 import { ResetInputRows } from "./chat-input/use-chat-input-dynamic-height";
 import {
   AddExtensionToChatThread,
+  CreateChatThread,
   RemoveExtensionFromChatThread,
   UpdateChatTitle,
 } from "./chat-services/chat-thread-service";
@@ -284,21 +285,35 @@ class ChatState {
     textToSpeechStore.speak(message);
   }
 
-  public async submitChat(e: FormEvent<HTMLFormElement>) {
+  public async submitChat(e: FormEvent<HTMLFormElement>, customInput?: string) {
     e.preventDefault();
-    if (this.input === "" || this.loading !== "idle") {
+
+    const inputContent = customInput || this.input;
+
+    if (inputContent === "" || this.loading !== "idle") {
       return;
+    }
+
+    // If there's no valid chat thread, create a new one
+    if (!this.chatThread || !this.chatThreadId) {
+      const response = await CreateChatThread(); // Create a new thread
+      if (response.status === "OK") {
+        this.updateCurrentThread(response.response);
+      } else {
+        showError("Failed to create chat thread: " + response.errors.join(", "));
+        return;
+      }
     }
 
     // get form data from e
     const formData = new FormData(e.currentTarget);
-
     const body = JSON.stringify({
       id: this.chatThreadId,
-      message: this.input,
+      message: inputContent,
     });
     formData.append("content", body);
 
+    // Continue with the existing chat logic
     this.chat(formData);
   }
 }
