@@ -25,11 +25,6 @@ export const MainMenu = async () => {
     <Menu>
       <MenuBar>
         <MenuItemContainer>
-          <MenuItem tooltip="Home" asChild>
-            <MenuLink href="/chat" ariaLabel="Go to the Home page">
-              <Home {...menuIconProps} />
-            </MenuLink>
-          </MenuItem>
           <MenuTrayToggle />
         </MenuItemContainer>
         <MenuItemContainer>

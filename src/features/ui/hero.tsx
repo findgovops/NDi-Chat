@@ -36,7 +36,7 @@ export const HeroButton: FC<HeroButtonProps> = (props) => {
       className="flex flex-col gap-4 h-auto p-4 items-start text-start justify-start"
       onClick={props.onClick}
     >
-      <span className="flex gap-2 items-center text-primary">
+      <span className="flex gap-2 items-center text-blue-500">
         <span>{props.icon}</span>
         <span className="">{props.title}</span>
       </span>

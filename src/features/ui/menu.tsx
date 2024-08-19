@@ -4,6 +4,7 @@ import { cn } from "@/ui/lib";
 import { LucideProps } from "lucide-react";
 import { Button, ButtonLinkVariant, ButtonProps } from "./button";
 import { TooltipProvider } from "./tooltip";
+import { color } from "@uiw/react-codemirror";
 
 const Menu = React.forwardRef<
   HTMLDivElement,
@@ -64,6 +65,8 @@ MenuItem.displayName = "MenuItem";
 const menuIconProps: LucideProps = {
   size: 24,
   strokeWidth: 1.6,
+  
+  
 };
 
 export { Menu, MenuBar, MenuItem, MenuItemContainer, menuIconProps };
