@@ -118,7 +118,7 @@ export const AddExtension: FC<Props> = (props) => {
 function Submit() {
   const { isLoading } = useExtensionState();
   return (
-    <Button disabled={isLoading} className="gap-2">
+    <Button disabled={isLoading} className="gap-2 bg-[#07b0e8]">
       <LoadingIndicator isLoading={isLoading} />
       Save
     </Button>

@@ -123,7 +123,7 @@ export const AddNewPersona: FC<Props> = (props) => {
 function Submit() {
   const status = useFormStatus();
   return (
-    <Button disabled={status.pending} className="gap-2">
+    <Button disabled={status.pending} className="gap-2 bg-[#07b0e8]">
       <LoadingIndicator isLoading={status.pending} />
       Save
     </Button>
