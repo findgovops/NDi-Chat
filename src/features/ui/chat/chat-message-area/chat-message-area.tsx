@@ -69,12 +69,12 @@ export const ChatMessageArea = (props: {
 
   return (
     <div className="flex flex-col">
-      <div className="h-7 flex items-center justify-between">
+      <div className="h-7 text-[#07b0e8] flex items-center justify-between">
         <div className="flex gap-3">
           {profile}
           <div
             className={cn(
-              "text-primary capitalize items-center flex",
+              "capitalize items-center flex",
               props.role === "function" || props.role === "tool"
                 ? "text-muted-foreground text-sm"
                 : ""

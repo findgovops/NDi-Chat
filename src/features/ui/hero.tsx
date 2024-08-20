@@ -32,11 +32,10 @@ interface HeroButtonProps {
 export const HeroButton: FC<HeroButtonProps> = (props) => {
   return (
     <Button
-      variant={"outline"}
-      className="flex flex-col gap-4 h-auto p-4 items-start text-start justify-start"
+      className="flex flex-col gap-4 h-auto p-4 border border-input bg-background hover:bg-accent items-start text-start justify-start"
       onClick={props.onClick}
     >
-      <span className="flex gap-2 items-center text-blue-500">
+      <span className="flex gap-2 items-center text-[#07b0e8]">
         <span>{props.icon}</span>
         <span className="">{props.title}</span>
       </span>

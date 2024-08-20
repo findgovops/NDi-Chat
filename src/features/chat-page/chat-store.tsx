@@ -286,8 +286,7 @@ class ChatState {
     textToSpeechStore.speak(message);
   }
 
-  public async submitChat(e: FormEvent<HTMLFormElement>, imageData?: Buffer | null, imageName?: string | null) {
-    e.preventDefault();
+  public async submitChat(formElement: HTMLFormElement, imageData?: Buffer | null, imageName?: string | null) {
     const input = this.input.trim();
 
     if (input === "" || this.loading !== "idle") {
@@ -320,7 +319,7 @@ class ChatState {
     }
 
     // Prepare the message content with the image URL if available
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(formElement);
     const body = JSON.stringify({
       id: this.chatThreadId,
       message: input,
