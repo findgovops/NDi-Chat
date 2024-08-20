@@ -10,6 +10,10 @@ on:
       - main
       - master
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   build:
 
@@ -33,6 +37,6 @@ jobs:
           GDN_TEMPLATEANALYZER_VERBOSE: 1
 
       - name: Upload alerts to Security tab
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.msdo.outputs.sarifFile }}
