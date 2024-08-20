@@ -2,12 +2,19 @@
 import { Tabs, TabsList, TabsTrigger } from "@/ui/tabs";
 import { Laptop2, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useEffect } from "react";
 
 export const ThemeToggle = () => {
   const { setTheme, theme } = useTheme();
 
+  useEffect(() => {
+    if (!theme) {
+      setTheme("light");
+    }
+  }, [theme, setTheme]);
+
   return (
-    <Tabs defaultValue={theme} className="w-full">
+    <Tabs defaultValue={theme || "light"} className="w-full">
       <TabsList className="flex flex-1">
         <TabsTrigger
           value="light"
