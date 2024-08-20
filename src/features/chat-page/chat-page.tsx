@@ -81,7 +81,7 @@ export const ChatPage: FC<ChatPageProps> = (props) => {
     // Create the new message associated with the current (or new) thread
     const messageResponse = await CreateChatMessage({
       name: session?.user?.name || "Unknown",
-      role: "user", // Use the correct value from ChatRole or a string directly if it's not an enum
+      role: "user", 
       content: messageContent,
       chatThreadId: thread.id,
       multiModalImage: multiModalImageUrl,

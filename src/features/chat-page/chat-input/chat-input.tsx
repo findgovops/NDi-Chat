@@ -108,7 +108,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
             }
           />
           <PromptSlider />
-          <input type="file" accept="image/*" onChange={handleFileChange} />
         </ChatInputSecondaryActionArea>
         <ChatInputPrimaryActionArea>
           <ImageInput />
