@@ -1,7 +1,10 @@
 import { createHash } from "crypto";
 import { getServerSession } from "next-auth";
 import { RedirectToPage } from "../common/navigation-helpers";
+import { isRedirectError} from "next/dist/client/components/redirect";
 import { options } from "./auth-api";
+
+
 
 export const userSession = async (): Promise<UserModel | null> => {
   const session = await getServerSession(options);
@@ -41,9 +44,17 @@ export const hashValue = (value: string): string => {
 };
 
 export const redirectIfAuthenticated = async () => {
-  const user = await userSession();
-  if (user) {
-    RedirectToPage("chat");
+  try {
+    const user = await userSession();
+    if (user) {
+      RedirectToPage("chat");  // This will throw an error that needs to be caught 
+    }   
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;  // Re-throw the redirect error to stop further execution
+    } else {
+      console.error("Unexpected error during authentication redirect:", error);
+    }
   }
 };
 

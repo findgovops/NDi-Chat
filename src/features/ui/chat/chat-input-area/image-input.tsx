@@ -47,7 +47,7 @@ export const ImageInput: FC = () => {
         className="hidden"
         onChange={(e) => InputImageStore.OnFileChange(e)}
       />
-      <Button
+      {/* <Button
         size="icon"
         variant={"ghost"}
         type="button"
@@ -55,7 +55,7 @@ export const ImageInput: FC = () => {
         aria-label="Add an image to the chat input"
       >
         <ImageIcon size={16} />
-      </Button>
+      </Button> */}
     </div>
   );
 };
