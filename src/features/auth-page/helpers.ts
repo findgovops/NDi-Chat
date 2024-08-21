@@ -1,7 +1,7 @@
 import { createHash } from "crypto";
 import { getServerSession } from "next-auth";
 import { RedirectToPage } from "../common/navigation-helpers";
-import { isRedirectError} from "next/dist/client/components/redirect";
+import { isRedirectError, redirect} from "next/dist/client/components/redirect";
 import { options } from "./auth-api";
 
 
@@ -47,7 +47,7 @@ export const redirectIfAuthenticated = async () => {
   try {
     const user = await userSession();
     if (user) {
-      RedirectToPage("chat");  // This will throw an error that needs to be caught 
+      redirect("chat");  // This will throw an error that needs to be caught 
     }   
   } catch (error) {
     if (isRedirectError(error)) {
