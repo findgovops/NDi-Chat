@@ -15,7 +15,7 @@ export const ThemeToggle = () => {
   }, [theme, resolvedTheme, setTheme]);
 
   return (
-    <Tabs defaultValue={"light"} className="w-full">
+    <Tabs defaultValue={resolvedTheme || "light"} className="w-full">
       <TabsList className="flex flex-1">
         <TabsTrigger
           value="light"
