@@ -5,8 +5,9 @@ import { useTheme } from "next-themes";
 import { useEffect } from "react";
 
 export const ThemeToggle = () => {
-  const { setTheme, theme } = useTheme();
+  const { setTheme, theme, resolvedTheme } = useTheme();
 
+  // Set the default theme to "light" if there's no existing theme set
   useEffect(() => {
     if (!theme) {
       setTheme("light");
@@ -14,7 +15,7 @@ export const ThemeToggle = () => {
   }, [theme, setTheme]);
 
   return (
-    <Tabs defaultValue={theme || "light"} className="w-full">
+    <Tabs defaultValue={resolvedTheme || "light"} className="w-full">
       <TabsList className="flex flex-1">
         <TabsTrigger
           value="light"
