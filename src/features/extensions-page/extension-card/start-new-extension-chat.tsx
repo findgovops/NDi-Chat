@@ -18,7 +18,7 @@ export const StartNewExtensionChat: FC<Props> = (props) => {
 
   return (
     <Button
-      className="flex-1 gap-3"
+      className="flex-1 gap-3 bg-[#07b0e8] hover:bg-[#07b0e8]/90"
       onClick={async () => {
         setIsLoading(true);
         const chat = await CreateChatWithExtension(extension.id);

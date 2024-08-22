@@ -11,10 +11,11 @@ import {
   UpsertChatThread,
 } from "../chat-services/chat-thread-service";
 import { ChatThreadModel } from "../chat-services/models";
+import { isRedirectError, redirect } from "next/dist/client/components/redirect";
 
 export const DeleteChatThreadByID = async (chatThreadID: string) => {
   await SoftDeleteChatThreadForCurrentUser(chatThreadID);
-  RedirectToPage("chat");
+  redirect("chat");
 };
 
 export const DeleteAllChatThreads = async (): Promise<

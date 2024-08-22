@@ -23,6 +23,7 @@ import {
   ChatDocumentModel,
   ChatThreadModel,
 } from "./models";
+import { isRedirectError, redirect } from "next/dist/client/components/redirect";
 
 export const FindAllChatThreadForCurrentUser = async (): Promise<
   ServerActionResponse<Array<ChatThreadModel>>
@@ -335,8 +336,16 @@ export const UpdateChatTitle = async (
 };
 
 export const CreateChatAndRedirect = async () => {
-  const response = await CreateChatThread();
-  if (response.status === "OK") {
-    RedirectToChatThread(response.response.id);
+  try {
+    const response = await CreateChatThread();
+    if (response.status === "OK") {
+      redirect(`/chat/${response.response.id}`);
+    }
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error; // Re-throw to allow Next.js to handle the redirect
+    } else {
+      console.error("Unexpected error during chat creation:", error);
+    }
   }
 };
