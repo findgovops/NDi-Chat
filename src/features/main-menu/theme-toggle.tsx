@@ -7,15 +7,15 @@ import { useEffect } from "react";
 export const ThemeToggle = () => {
   const { setTheme, theme, resolvedTheme } = useTheme();
 
-  // Set the default theme to "light" if there's no existing theme set
   useEffect(() => {
-    if (!theme) {
+    // Only set to "light" if the theme has not been explicitly set (first time load)
+    if (!theme && (resolvedTheme === "dark" || resolvedTheme === "system")) {
       setTheme("light");
     }
-  }, [theme, setTheme]);
+  }, [theme, resolvedTheme, setTheme]);
 
   return (
-    <Tabs defaultValue={resolvedTheme || "light"} className="w-full">
+    <Tabs defaultValue={theme || "light"} className="w-full">
       <TabsList className="flex flex-1">
         <TabsTrigger
           value="light"
