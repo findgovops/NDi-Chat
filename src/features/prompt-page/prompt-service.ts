@@ -83,11 +83,15 @@ export const FindAllPrompts = async (): Promise<
 > => {
   try {
     const querySpec: SqlQuerySpec = {
-      query: "SELECT * FROM root r WHERE r.type=@type",
+      query: "SELECT * FROM root r WHERE r.type=@type AND r.userId=@userId",
       parameters: [
         {
           name: "@type",
           value: PROMPT_ATTRIBUTE,
+        },
+        {
+          name: "@userId",
+          value: await userHashedId(),
         },
       ],
     };
@@ -119,11 +123,8 @@ export const EnsurePromptOperation = async (
   const currentUser = await getCurrentUser();
 
   if (promptResponse.status === "OK") {
-    if (currentUser.isAdmin) {
       return promptResponse;
     }
-  }
-
   return {
     status: "UNAUTHORIZED",
     errors: [
