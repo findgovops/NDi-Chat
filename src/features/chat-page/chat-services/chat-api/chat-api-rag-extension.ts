@@ -27,7 +27,7 @@ export const SearchAzureAISimilarDocuments = async (req: Request) => {
     }
 
     const withoutEmbedding = FormatCitations(result.response);
-    const citationResponse = await CreateCitations(withoutEmbedding, userId);
+    const citationResponse = await CreateCitations(withoutEmbedding);
 
     // only get the citations that are ok
     const allCitations = [];
