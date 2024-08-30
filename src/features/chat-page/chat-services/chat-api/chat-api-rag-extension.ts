@@ -22,7 +22,8 @@ export const SearchAzureAISimilarDocuments = async (req: Request) => {
 
     if (result.status !== "OK") {
       console.error("🔴 Retrieving documents", result.errors);
-      return new Response(JSON.stringify(result));
+      return new Response(JSON.stringify(result), { status: 403 }); 
+
     }
 
     const withoutEmbedding = FormatCitations(result.response);
