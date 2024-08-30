@@ -12,6 +12,14 @@ export const SearchAzureAISimilarDocuments = async (req: Request) => {
     const indexName = req.headers.get("indexName") as string;
     const userId = req.headers.get("authorization") as string;
 
+    console.log("Received request with the following parameters:");
+    console.log("search:", search);
+    console.log("vectors:", vectors);
+    console.log("apiKey:", apiKey ? "Provided" : "Missing");
+    console.log("searchName:", searchName);
+    console.log("indexName:", indexName);
+    console.log("userId:", userId);
+
     const result = await ExtensionSimilaritySearch({
       apiKey,
       searchName,
@@ -21,28 +29,25 @@ export const SearchAzureAISimilarDocuments = async (req: Request) => {
     });
 
     if (result.status !== "OK") {
-      console.error("🔴 Retrieving documents", result.errors);
-      return new Response(JSON.stringify(result), { status: 403 }); 
-
+      console.error("🔴 Error retrieving documents:", result.errors);
+      return new Response(JSON.stringify(result), { status: 403 });
     }
+
+    console.log("Documents retrieved successfully:", result.response);
 
     const withoutEmbedding = FormatCitations(result.response);
-    const citationResponse = await CreateCitations(withoutEmbedding);
+    const citationResponse = await CreateCitations(withoutEmbedding, userId);
 
-    // only get the citations that are ok
-    const allCitations = [];
-    for (const citation of citationResponse) {
-      if (citation.status === "OK") {
-        allCitations.push({
-          id: citation.response.id,
-          content: citation.response.content,
-        });
-      }
-    }
+    const allCitations = citationResponse
+      .filter(citation => citation.status === "OK")
+      .map(citation => ({
+        id: citation.response.id,
+        content: citation.response.content,
+      }));
 
     return new Response(JSON.stringify(allCitations));
   } catch (e) {
-    console.error("🔴 Retrieving documents", e);
-    return new Response(JSON.stringify(e));
+    console.error("🔴 Error during document retrieval:", e);
+    return new Response(JSON.stringify({ error: e }), { status: 500 });
   }
 };
