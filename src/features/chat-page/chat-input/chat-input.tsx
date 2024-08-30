@@ -49,21 +49,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
   const submitButton = React.useRef<HTMLButtonElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.result) {
-          const arrayBuffer = reader.result as ArrayBuffer;
-          const buffer = Buffer.from(arrayBuffer);
-          setImageData(buffer); // Store the image data buffer
-          setImageName(file.name); // Store the image name
-        }
-      };
-      reader.readAsArrayBuffer(file); // Read the file as an ArrayBuffer
-    }
-  };
+  
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
