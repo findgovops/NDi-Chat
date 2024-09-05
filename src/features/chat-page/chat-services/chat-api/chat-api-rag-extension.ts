@@ -6,7 +6,7 @@ export const SearchAzureAISimilarDocuments = async (req: Request) => {
     const body = await req.json();
     const search = body.search as string;
 
-    const vectors = req.headers.get("text_vector") as string;
+    const vectors = req.headers.get("vectors") as string;
     const apiKey = req.headers.get("apiKey") as string;
     const searchName = req.headers.get("searchName") as string;
     const indexName = req.headers.get("indexName") as string;
