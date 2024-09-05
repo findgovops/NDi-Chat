@@ -123,9 +123,13 @@ async function executeFunction(props: {
 
     const response = await fetch(functionModel.endpoint, requestInit);
 
-    if (!response.ok) {
-      return `There was an error calling the api: ${response.statusText}`;
-    }
+
+  if (!response.ok) {
+    console.error('API call failed:', response.status, response.statusText);
+    console.error('Request URL:', functionModel.endpoint);
+    console.error('Request Headers:', headers);
+    return `There was an error calling the api: ${response.statusText}`;
+  }
     const result = await response.json();
 
     return {
