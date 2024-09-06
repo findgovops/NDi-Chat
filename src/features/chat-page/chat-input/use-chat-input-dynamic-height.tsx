@@ -1,6 +1,6 @@
 import { proxy, snapshot, useSnapshot } from "valtio";
 
-const MAX_ROWS = 6;
+const MAX_ROWS = 20;
 
 interface ChatInputStoreProps {
   rows: number;
