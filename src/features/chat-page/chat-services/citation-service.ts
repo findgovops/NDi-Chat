@@ -81,6 +81,8 @@ export const FindCitationByID = async (
       .items.query<ChatCitationModel>(querySpec)
       .fetchAll();
 
+    console.log("Citation query result:", resources);
+
     if (resources.length === 0) {
       return {
         status: "ERROR",
