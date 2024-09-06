@@ -1,4 +1,4 @@
-export const AI_NAME = "NDiChat";
+export const AI_NAME = "NDiGPT";
 export const AI_DESCRIPTION = "NDiChat is a friendly AI assistant.";
 export const CHAT_DEFAULT_PERSONA = AI_NAME;
 
