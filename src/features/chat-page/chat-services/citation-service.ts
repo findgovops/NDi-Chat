@@ -109,12 +109,10 @@ export const FormatCitations = (citation: DocumentSearchResponse[]) => {
       score: d.score,
       document: {
         metadata: d.document.metadata,
-        pageContent: d.document.pageContent || d.document.content || d.document.chunk,
+        pageContent: d.document.pageContent,
         chatThreadId: d.document.chatThreadId,
         id: "",
         user: "",
-        chunk: "",
-        content: ""
       },
     });
   });

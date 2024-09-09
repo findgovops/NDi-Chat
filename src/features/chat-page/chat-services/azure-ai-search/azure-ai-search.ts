@@ -16,8 +16,6 @@ import {
 } from "@azure/search-documents";
 
 export interface AzureSearchDocumentIndex {
-  chunk: string;
-  content: string;
   id: string;
   pageContent: string;
   embedding?: number[];
@@ -215,8 +213,6 @@ export const IndexDocuments = async (
         pageContent: doc,
         metadata: fileName,
         embedding: [],
-        chunk: "",
-        content: ""
       };
 
       documentsToIndex.push(docToAdd);
