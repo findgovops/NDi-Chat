@@ -13,6 +13,7 @@ import {
   PocketKnife,
   Sheet,
   VenetianMask,
+  BookOpenText
 } from "lucide-react";
 import { getCurrentUser } from "../auth-page/helpers";
 import { MenuLink } from "./menu-link";
@@ -46,6 +47,11 @@ export const MainMenu = async () => {
           <MenuItem tooltip="prompts">
             <MenuLink href="/prompt" ariaLabel="Go to the Prompt Library configuration page">
               <Book {...menuIconProps} />
+            </MenuLink>
+          </MenuItem>
+          <MenuItem tooltip="guidance">
+            <MenuLink href="/guidance" ariaLabel="Go to the Guidance page">
+              <BookOpenText {...menuIconProps} />
             </MenuLink>
           </MenuItem>
           {user.isAdmin && (
