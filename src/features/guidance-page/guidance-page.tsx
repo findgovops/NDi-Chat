@@ -6,7 +6,7 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 
 
 const GuidancePage = async (): Promise<ReactElement> => {
-  const documentUrl = "https://59c573de354093bc651d3b14a0a25ec0.cdn.bubble.io/f1727455946076x361973318464588350/NDi%20ChatGPT%20Guidebook.pdf"; // Replace with your actual PDF URL
+  const documentUrl = "https://59c573de354093bc651d3b14a0a25ec0.cdn.bubble.io/f1727455946076x361973318464588350/NDi%20ChatGPT%20Guidebook.pdf#navpanes=0&scrollbar=0"; // Replace with your actual PDF URL
 
   // Optional: Validate the URL format
   const isValidUrl = (url: string): boolean => {
