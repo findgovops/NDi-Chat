@@ -4,6 +4,9 @@ import { ReactElement } from "react";
 import { GuidanceHero } from "./guidance-hero/guidance-hero";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 
+interface GuidancePageProps {
+  // Define any props if needed
+}
 
 const GuidancePage = async (): Promise<ReactElement> => {
   const documentUrl = "https://59c573de354093bc651d3b14a0a25ec0.cdn.bubble.io/f1727455946076x361973318464588350/NDi%20ChatGPT%20Guidebook.pdf#navpanes=0&scrollbar=0"; // Replace with your actual PDF URL
@@ -32,12 +35,12 @@ const GuidancePage = async (): Promise<ReactElement> => {
   }
 
   return (
-    <ScrollArea className="flex-1">
+    <ScrollArea className="flex-1 overflow-auto">
       <main className="flex flex-1 flex-col">
         <GuidanceHero />
-        <div className="container max-w-4xl py-3 h-screen">
+        <div className="container max-w-4xl py-3 flex-1">
           {/* Embed PDF Document */}
-          <div className="pdf-embed-container h-full w-full">
+          <div className="pdf-embed-container h-screen w-full">
             <embed
               src={documentUrl}
               type="application/pdf"
