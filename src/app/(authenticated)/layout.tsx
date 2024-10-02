@@ -17,9 +17,11 @@ export default function RootLayout({
 }) {
   return (
     <AuthenticatedProviders>
-      <div className={cn("flex flex-1 h-full")}>
+      <div className={cn("flex flex-1 items-stretch")}>
         <MainMenu />
-        <div className="flex-1 flex flex-col">{children}</div>
+        <div className="flex-1 flex">
+          {children}
+          </div>
       </div>
     </AuthenticatedProviders>
   );

@@ -16,11 +16,11 @@ body {
   overflow: hidden; /* Prevent body from scrolling, rely on inner ScrollArea */
 }
 
-/* Optional: Ensure the root container uses flex layout */
+/* Optional: Ensure the root container uses flex layout
 #__next {
   display: flex;
   flex-direction: column;
-}
+} */
 @layer base {
   :root {
     --background: 0 0% 100%;
