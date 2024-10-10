@@ -8,9 +8,9 @@ export const BingSearch = () => {
   const newExample = () => {
     const bingExample: ExtensionModel = {
       createdAt: new Date(),
-      description: "Bring up to date information with Bing Search",
+      description: "Bring up to date information with Online Search",
       id: "",
-      name: "Bing Search",
+      name: "Online Search",
       executionSteps: `You are an expert in searching the web using BingSearch function. `,
       functions: [
         {
@@ -64,8 +64,8 @@ export const BingSearch = () => {
 
   return (
     <HeroButton
-      title="Bing Search"
-      description="Bring up to date information with Bing Search"
+      title="Online Search"
+      description="Bring up to date information with Online Search"
       icon={<Globe />}
       onClick={newExample}
     />
