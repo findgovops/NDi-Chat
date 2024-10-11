@@ -47,7 +47,7 @@ export const AISearch = () => {
     },
     "description": "You must use this to search for content based on user questions."
     }`,
-          endpoint: `searchUrl.windows.net/indexes/${indexSearch}/docs/search?api-version=2024-07-01`, // Use indexSearch from input
+          endpoint: `https://ndichatenvsearchqkl6lyswcexbe.search.windows.net/indexes/${indexSearch}/docs/search?api-version=2024-07-01`, // Use indexSearch from input
           id: uniqueId(),
           endpointType: "POST",
           isOpen: false,
@@ -119,8 +119,8 @@ export const AISearch = () => {
             <label>indexSearch</label>
             <Input value={indexSearch} onChange={(e) => setIndexSearch(e.target.value)} />
           </div>
-          <Button onClick={newExample}>OK</Button>
-          <Button onClick={() => setModalOpen(false)}>Cancel</Button>
+          <Button className="bg-[#07b0e8] hover:bg-[#07b0e8]/90" onClick={newExample}>OK</Button>
+          <Button className="bg-[#07b0e8] hover:bg-[#07b0e8]/90" onClick={() => setModalOpen(false)}>Cancel</Button>
         </Modal>
       )}
     </>
