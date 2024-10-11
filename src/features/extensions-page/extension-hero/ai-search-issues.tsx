@@ -125,7 +125,7 @@ export const AISearch: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="mb-4">
-              <label className="block font-medium mb-1">Name</label>
+              <label className="block font-medium mb-1">What do you want to call it?</label>
               <input
                 type="text"
                 value={name}
@@ -153,11 +153,11 @@ export const AISearch: React.FC = () => {
             </div>
           </CardContent>
           <CardFooter className="flex justify-end">
-            <Button className="border border-input bg-[#07b0e8] hover:bg-[#07b0e8]/90 "  onClick={() => setIsOpen(false)}>
-              Cancel
-            </Button>
             <Button className="bg-[#07b0e8] hover:bg-[#07b0e8]/90" onClick={newExample}>
               OK
+            </Button>
+            <Button className="border border-input bg-[#07b0e8] hover:bg-[#07b0e8]/90 "  onClick={() => setIsOpen(false)}>
+              Cancel
             </Button>
           </CardFooter>
         </Card>
