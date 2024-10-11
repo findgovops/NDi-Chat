@@ -116,7 +116,7 @@ export const AISearch = () => {
             <Input value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
           </div>
           <div>
-            <label>indexSearch</label>
+            <label>indexName</label>
             <Input value={indexSearch} onChange={(e) => setIndexSearch(e.target.value)} />
           </div>
           <Button className="bg-[#07b0e8] hover:bg-[#07b0e8]/90" onClick={newExample}>OK</Button>
