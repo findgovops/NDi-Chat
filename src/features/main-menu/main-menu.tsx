@@ -10,7 +10,7 @@ import {
   Book,
   Home,
   MessageCircle,
-  PocketKnife,
+  PaintBucket,
   Sheet,
   VenetianMask,
   BookOpenText
@@ -41,7 +41,7 @@ export const MainMenu = async () => {
           </MenuItem>
           <MenuItem tooltip="extensions">
             <MenuLink href="/extensions" ariaLabel="Go to the Extensions configuration page">
-              <PocketKnife {...menuIconProps} />
+              <PaintBucket {...menuIconProps} />
             </MenuLink>
           </MenuItem>
           <MenuItem tooltip="prompts">

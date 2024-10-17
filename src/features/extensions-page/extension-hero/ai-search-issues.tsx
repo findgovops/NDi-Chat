@@ -2,7 +2,7 @@
 import React, { useState, ChangeEvent } from 'react';
 import { uniqueId } from '@/features/common/util';
 import { HeroButton } from '@/features/ui/hero';
-import { FileSearch } from 'lucide-react';
+import { PaintBucket } from 'lucide-react';
 import { ExtensionModel } from '../extension-services/models';
 import { extensionStore } from '../extension-store';
 
@@ -37,7 +37,7 @@ export const AISearch: React.FC = () => {
 
     const aiSearchExample: ExtensionModel = {
       createdAt: new Date(),
-      description: 'NDiGPT AI Search',
+      description: 'NDiGPT AI Bucket',
       id: '',
       name: name,
       executionSteps: `You are an expert in searching internal documents using aisearch function. You must always include a citation at the end of your answer and don't include a full stop after the citations. Use the format for your citation {% citation items=[{name:\\"filename 1\\",id:\\"file id\\"}, {name:\\"filename 2\\",id:\\"file id\\"}] /%}`,
@@ -113,19 +113,19 @@ export const AISearch: React.FC = () => {
   return (
     <>
       <HeroButton
-        title="NDiGPT Search"
+        title="NDiGPT Bucket"
         description="Bring your own NDiGPT Search"
-        icon={<FileSearch />}
+        icon={<PaintBucket />}
         onClick={() => setIsOpen(true)}
       />
       {isOpen && (
         <Card className="mt-4">
           <CardHeader>
-            <CardTitle>Enter Search Details</CardTitle>
+            <CardTitle>Enter Bucket Details</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="mb-4">
-              <label className="block font-medium mb-1">What do you want to call it?</label>
+              <label className="block font-medium mb-1">Bucket Name</label>
               <input
                 type="text"
                 value={name}
