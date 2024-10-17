@@ -134,7 +134,7 @@ export const AISearch: React.FC = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block font-medium mb-1">api-Key</label>
+              <label className="block font-medium mb-1">API</label>
               <input
                 type="text"
                 value={apiKey}
@@ -143,7 +143,7 @@ export const AISearch: React.FC = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block font-medium mb-1">indexName</label>
+              <label className="block font-medium mb-1">Index</label>
               <input
                 type="text"
                 value={indexSearch}

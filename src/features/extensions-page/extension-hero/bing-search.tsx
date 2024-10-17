@@ -3,9 +3,24 @@ import { HeroButton } from "@/features/ui/hero";
 import { Globe } from "lucide-react";
 import { ExtensionModel } from "../extension-services/models";
 import { extensionStore } from "../extension-store";
+import { ChangeEvent, useState } from "react";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
+import { Button } from "@/features/ui/button";
 
-export const BingSearch = () => {
+export const BingSearch: React.FC = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [API, setApiKey] = useState<string>('');
+
+  const handleApiKeyChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setApiKey(e.target.value);
+  };
+
   const newExample = () => {
+    if (!API) {
+      alert('Please fill in the API field.');
+      return;
+    }
+  
     const bingExample: ExtensionModel = {
       createdAt: new Date(),
       description: "Bring up to date information with Online Search",
@@ -51,7 +66,7 @@ export const BingSearch = () => {
         {
           id: uniqueId(),
           key: "Ocp-Apim-Subscription-Key",
-          value: "YOUR API KEY HERE",
+          value: API,
         },
       ],
       isPublished: false,
@@ -60,14 +75,43 @@ export const BingSearch = () => {
     };
 
     extensionStore.openAndUpdate(bingExample);
+    setIsOpen(false);
+    setApiKey('');
   };
 
   return (
+    <>
     <HeroButton
       title="Online Search"
       description="Bring up to date information with Online Search"
       icon={<Globe />}
-      onClick={newExample}
+      onClick={() => setIsOpen(true)}
     />
+    {isOpen && (<Card className="mt-4">
+      <CardHeader>
+        <CardTitle>Enter Online Search Details</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="mb-4">
+          <label className="block font-medium mb-1">API</label>
+          <input
+            type="text"
+            value={API}
+            onChange={handleApiKeyChange}
+            className="w-full px-3 py-2 border rounded"
+          />
+        </div>
+      </CardContent>
+      <CardFooter className="flex justify-end">
+        <Button className="bg-[#07b0e8] hover:bg-[#07b0e8]/90" onClick={newExample}>
+          OK
+        </Button>
+        <Button className="border border-input bg-[#07b0e8] hover:bg-[#07b0e8]/90 "  onClick={() => setIsOpen(false)}>
+          Cancel
+        </Button>
+      </CardFooter>
+    </Card>
+  )}
+  </>
   );
 };
