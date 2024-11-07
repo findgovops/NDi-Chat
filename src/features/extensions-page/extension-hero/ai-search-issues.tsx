@@ -84,7 +84,7 @@ export const AISearch: React.FC = () => {
         {
           id: uniqueId(),
           key: 'searchName',
-          value: name,
+          value: "ndichatenvsearchqkl6lyswcexbe",
         },
         {
           id: uniqueId(),
