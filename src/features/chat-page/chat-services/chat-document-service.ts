@@ -12,11 +12,16 @@ import { SqlQuerySpec } from "@azure/cosmos";
 import { EnsureIndexIsCreated } from "./azure-ai-search/azure-ai-search";
 import { CHAT_DOCUMENT_ATTRIBUTE, ChatDocumentModel } from "./models";
 import ExcelJS from 'exceljs';
+import officeParser from 'officeparser';
 
 const MAX_UPLOAD_DOCUMENT_SIZE: number = 20000000;
-const CHUNK_SIZE = 2300;
-// 25% overlap
-const CHUNK_OVERLAP = CHUNK_SIZE * 0.25;
+const CHUNK_SIZE = 8000; // Updated chunk size
+const CHUNK_OVERLAP = Math.floor(CHUNK_SIZE * 0.25);
+
+// Sanitize content function
+function sanitizeContent(content: string): string {
+  return content.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
+}
 
 export const CrackDocument = async (
   formData: FormData
@@ -26,9 +31,8 @@ export const CrackDocument = async (
     if (response.status === "OK") {
       const fileResponse = await LoadFile(formData);
       if (fileResponse.status === "OK") {
-        const splitDocuments = await ChunkDocumentWithOverlap(
-          fileResponse.response.join("\n")
-        );
+        const sanitizedContent = sanitizeContent(fileResponse.response.join("\n"));
+        const splitDocuments = await ChunkDocumentWithOverlap(sanitizedContent);
 
         return {
           status: "OK",
@@ -52,7 +56,6 @@ export const CrackDocument = async (
   }
 };
 
-
 const LoadFile = async (
   formData: FormData
 ): Promise<ServerActionResponse<string[]>> => {
@@ -64,11 +67,11 @@ const LoadFile = async (
       : MAX_UPLOAD_DOCUMENT_SIZE;
 
     if (file && file.size < fileSize) {
-      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      const fileExtension = file.name.split(".").pop()?.toLowerCase();
       const docs: Array<string> = [];
 
-      if (fileExtension === 'xls' || fileExtension === 'xlsx') {
-        // Handle Excel files using the exceljs library
+      if (fileExtension === "xlsx") {
+        // Handle Excel files using exceljs library
         const arrayBuffer = await file.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
         const workbook = new ExcelJS.Workbook();
@@ -77,20 +80,20 @@ const LoadFile = async (
 
         // Iterate over all sheets
         workbook.eachSheet((worksheet) => {
-          let sheetText = '';
+          let sheetText = "";
 
           // Iterate over all rows in the sheet
           worksheet.eachRow((row: ExcelJS.Row) => {
             const values = row.values as ExcelJS.CellValue[];
             const rowValues = values.slice(1).map((cell: ExcelJS.CellValue) => {
               if (cell === null || cell === undefined) {
-                return '';
-              } else if (typeof cell === 'object') {
-                if ('formula' in cell) {
+                return "";
+              } else if (typeof cell === "object") {
+                if ("formula" in cell) {
                   return cell.result !== undefined && cell.result !== null
                     ? String(cell.result)
-                    : '';
-                } else if ('text' in cell) {
+                    : "";
+                } else if ("text" in cell) {
                   return cell.text;
                 } else {
                   return JSON.stringify(cell);
@@ -100,22 +103,40 @@ const LoadFile = async (
               }
             });
 
-            sheetText += rowValues.join('\t') + '\n';
+            sheetText += rowValues.join("\t") + "\n";
           });
 
           docs.push(sheetText);
         });
-
-      } else if (fileExtension === 'csv') {
+      } else if (fileExtension === "csv") {
         // Handle CSV files
         const arrayBuffer = await file.arrayBuffer();
-        const decoder = new TextDecoder('utf-8');
+        const decoder = new TextDecoder("utf-8");
         const text = decoder.decode(arrayBuffer);
         docs.push(text);
+      } else if (fileExtension === "pptx") {
+        // Handle PowerPoint files using officeparser
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
 
+        const content = await officeParser.parseOfficeAsync(buffer);
+        docs.push(content);
       } else {
         // Handle other file types using Azure Form Recognizer
-        // ... existing code ...
+        const client = DocumentIntelligenceInstance();
+        const blob = new Blob([file], { type: file.type });
+
+        const poller = await client.beginAnalyzeDocument(
+          "prebuilt-read",
+          await blob.arrayBuffer()
+        );
+        const { paragraphs } = await poller.pollUntilDone();
+
+        if (paragraphs) {
+          for (const paragraph of paragraphs) {
+            docs.push(paragraph.content);
+          }
+        }
       }
 
       return {
@@ -132,17 +153,22 @@ const LoadFile = async (
         ],
       };
     }
-  } catch (e) {
+  } catch (e: any) {
     return {
       status: "ERROR",
       errors: [
         {
-          message: `${e}`,
+          message: `Error processing file: ${e.message}`,
         },
       ],
     };
   }
 };
+
+
+
+
+
 export const FindAllChatDocuments = async (
   chatThreadID: string
 ): Promise<ServerActionResponse<ChatDocumentModel[]>> => {

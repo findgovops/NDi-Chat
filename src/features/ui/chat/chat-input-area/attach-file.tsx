@@ -56,7 +56,7 @@ const AttachFile: React.FC<AttachFileProps> = ({ onFileChange }) => {
         style={{ display: "none" }}
         onChange={handleFileChange}
         multiple // Allow multiple file selection
-        accept=".pdf,.doc,.docx,.txt,.jpg,.png,.pptx,.ppt,.xlsx,.csv" // Include PowerPoint and Excel file types
+        accept=".pdf,.doc,.docx,.txt,.jpg,.png,.pptx,.xlsx,.csv" // Include PowerPoint and Excel file types
       />
     </>
   );
