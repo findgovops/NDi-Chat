@@ -23,7 +23,7 @@ import { StopChat } from "@/features/ui/chat/chat-input-area/stop-chat";
 import { SubmitChat } from "@/features/ui/chat/chat-input-area/submit-chat";
 import React, { useEffect, useRef, useState } from "react";
 import { chatStore, useChat } from "../chat-store";
-import { useFileStore, fileStore } from "../chat-input/file/file-store"; // Correct usage
+import { useFileStore } from "../chat-input/file/file-store"; 
 import { PromptSlider } from "./prompt/prompt-slider";
 import {
   speechToTextStore,

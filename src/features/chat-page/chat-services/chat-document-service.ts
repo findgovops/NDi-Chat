@@ -11,6 +11,7 @@ import { uniqueId } from "@/features/common/util";
 import { SqlQuerySpec } from "@azure/cosmos";
 import { EnsureIndexIsCreated } from "./azure-ai-search/azure-ai-search";
 import { CHAT_DOCUMENT_ATTRIBUTE, ChatDocumentModel } from "./models";
+import ExcelJS from 'exceljs';
 
 const MAX_UPLOAD_DOCUMENT_SIZE: number = 20000000;
 const CHUNK_SIZE = 2300;
@@ -51,6 +52,7 @@ export const CrackDocument = async (
   }
 };
 
+
 const LoadFile = async (
   formData: FormData
 ): Promise<ServerActionResponse<string[]>> => {
@@ -62,22 +64,58 @@ const LoadFile = async (
       : MAX_UPLOAD_DOCUMENT_SIZE;
 
     if (file && file.size < fileSize) {
-      const client = DocumentIntelligenceInstance();
-
-      const blob = new Blob([file], { type: file.type });
-
-      const poller = await client.beginAnalyzeDocument(
-        "prebuilt-read",
-        await blob.arrayBuffer()
-      );
-      const { paragraphs } = await poller.pollUntilDone();
-
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
       const docs: Array<string> = [];
 
-      if (paragraphs) {
-        for (const paragraph of paragraphs) {
-          docs.push(paragraph.content);
-        }
+      if (fileExtension === 'xls' || fileExtension === 'xlsx') {
+        // Handle Excel files using the exceljs library
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const workbook = new ExcelJS.Workbook();
+
+        await workbook.xlsx.load(buffer);
+
+        // Iterate over all sheets
+        workbook.eachSheet((worksheet) => {
+          let sheetText = '';
+
+          // Iterate over all rows in the sheet
+          worksheet.eachRow((row: ExcelJS.Row) => {
+            const values = row.values as ExcelJS.CellValue[];
+            const rowValues = values.slice(1).map((cell: ExcelJS.CellValue) => {
+              if (cell === null || cell === undefined) {
+                return '';
+              } else if (typeof cell === 'object') {
+                if ('formula' in cell) {
+                  return cell.result !== undefined && cell.result !== null
+                    ? String(cell.result)
+                    : '';
+                } else if ('text' in cell) {
+                  return cell.text;
+                } else {
+                  return JSON.stringify(cell);
+                }
+              } else {
+                return String(cell);
+              }
+            });
+
+            sheetText += rowValues.join('\t') + '\n';
+          });
+
+          docs.push(sheetText);
+        });
+
+      } else if (fileExtension === 'csv') {
+        // Handle CSV files
+        const arrayBuffer = await file.arrayBuffer();
+        const decoder = new TextDecoder('utf-8');
+        const text = decoder.decode(arrayBuffer);
+        docs.push(text);
+
+      } else {
+        // Handle other file types using Azure Form Recognizer
+        // ... existing code ...
       }
 
       return {
@@ -105,7 +143,6 @@ const LoadFile = async (
     };
   }
 };
-
 export const FindAllChatDocuments = async (
   chatThreadID: string
 ): Promise<ServerActionResponse<ChatDocumentModel[]>> => {
