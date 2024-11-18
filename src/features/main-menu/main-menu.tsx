@@ -13,15 +13,17 @@ import {
   PaintBucket,
   Sheet,
   VenetianMask,
-  BookOpenText
+  BookOpenText,
+  Shield
 } from "lucide-react";
 import { getCurrentUser } from "../auth-page/helpers";
 import { MenuLink } from "./menu-link";
 import { UserProfile } from "./user-profile";
 
+
 export const MainMenu = async () => {
   const user = await getCurrentUser();
-
+  
   return (
     <Menu>
       <MenuBar>
@@ -54,6 +56,13 @@ export const MainMenu = async () => {
               <BookOpenText {...menuIconProps} />
             </MenuLink>
           </MenuItem>
+          {user.email === process.env.ADMIN_EMAIL_ADDRESS && (
+            <MenuItem tooltip="Access Portal">
+              <MenuLink href="/access-portal" ariaLabel="Go to the Access Portal">
+                <Shield {...menuIconProps} />
+              </MenuLink>
+            </MenuItem>
+          )}
           {user.isAdmin && (
             <>
               <MenuItem tooltip="reporting">

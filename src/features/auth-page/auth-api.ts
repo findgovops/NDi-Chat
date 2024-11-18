@@ -70,7 +70,7 @@ const configureIdentityProvider = () => {
           // We're going to take any username and make a new user with it
           // Create the id as the hash of the email as per userHashedId (helpers.ts)
           const username = credentials?.username || "dev";
-          const email = username + "@localhost";
+          const email = username + "@netdes.com";
           const user = {
             id: hashValue(email),
             name: username,

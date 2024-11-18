@@ -35,7 +35,7 @@ const AttachFile: React.FC<AttachFileProps> = ({ onFileChange }) => {
     });
 
     onFileChange(formData);
-    event.target.value = ""; // Clear the input after handling the files
+    event.target.value = ""; 
   };
 
   return (
@@ -55,8 +55,8 @@ const AttachFile: React.FC<AttachFileProps> = ({ onFileChange }) => {
         ref={fileInputRef}
         style={{ display: "none" }}
         onChange={handleFileChange}
-        multiple // Allow multiple file selection
-        accept=".pdf,.doc,.docx,.txt,.jpg,.png,.pptx,.xlsx,.csv" // Include PowerPoint and Excel file types
+        multiple 
+        accept=".pdf,.doc,.docx,.txt,.jpg,.png,.pptx,.xlsx,.csv" 
       />
     </>
   );
