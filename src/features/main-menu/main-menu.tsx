@@ -23,6 +23,7 @@ import { UserProfile } from "./user-profile";
 
 export const MainMenu = async () => {
   const user = await getCurrentUser();
+  console.log("ADMIN_EMAIL_ADDRESS:", process.env.ADMIN_EMAIL_ADDRESS);
   
   return (
     <Menu>
