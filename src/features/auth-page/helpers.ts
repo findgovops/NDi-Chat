@@ -3,8 +3,8 @@ import { getServerSession } from "next-auth";
 import { RedirectToPage } from "../common/navigation-helpers";
 import { isRedirectError, redirect} from "next/dist/client/components/redirect";
 import { options } from "./auth-api";
-
-
+import { InteractionRequiredAuthError } from '@azure/msal-browser';
+import { msalInstance } from './auth-api';
 
 export const userSession = async (): Promise<UserModel | null> => {
   const session = await getServerSession(options);
@@ -26,6 +26,27 @@ export const getCurrentUser = async (): Promise<UserModel> => {
     return user;
   }
   throw new Error("User not found");
+};
+
+export const getCurrentUserGroups = async (accessToken: string): Promise<string[]> => {
+  try {
+    const graphResponse = await fetch('https://graph.microsoft.com/v1.0/me/memberOf', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const data = await graphResponse.json();
+
+    const groupIds = data.value
+      .filter((group: any) => group['@odata.type'] === '#microsoft.graph.group')
+      .map((group: any) => group.id);
+
+    return groupIds;
+  } catch (error) {
+    console.error('Error fetching user groups:', error);
+    return [];
+  }
 };
 
 export const userHashedId = async (): Promise<string> => {

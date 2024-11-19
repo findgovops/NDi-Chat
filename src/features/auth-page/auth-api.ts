@@ -4,6 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
 import { Provider } from "next-auth/providers/index";
 import { hashValue } from "./helpers";
+import { PublicClientApplication } from '@azure/msal-browser';
 
 const configureIdentityProvider = () => {
   const providers: Array<Provider> = [];
@@ -38,6 +39,11 @@ const configureIdentityProvider = () => {
         clientId: process.env.AZURE_AD_CLIENT_ID!,
         clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
         tenantId: process.env.AZURE_AD_TENANT_ID!,
+        authorization: {
+          params: {
+            scope: 'openid profile email offline_access Group.Read.All',
+          },
+        },
         async profile(profile) {
           const newProfile = {
             ...profile,
@@ -93,16 +99,27 @@ const configureIdentityProvider = () => {
 
 export const options: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
-  providers: [...configureIdentityProvider()],
+  providers: [
+    AzureADProvider({
+      clientId: process.env.AZURE_AD_CLIENT_ID!,
+      clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
+      tenantId: process.env.AZURE_AD_TENANT_ID!,
+      authorization: {
+        params: {
+          scope: 'openid profile email offline_access Group.Read.All',
+        },
+      },
+    }),
+  ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user?.isAdmin) {
-        token.isAdmin = user.isAdmin;
+    async jwt({ token, account }) {
+      if (account) {
+        token.accessToken = account.access_token as string | undefined;
       }
       return token;
     },
-    async session({ session, token, user }) {
-      session.user.isAdmin = token.isAdmin as boolean;
+    async session({ session, token }) {
+      session.accessToken = token.accessToken;
       return session;
     },
   },
@@ -110,5 +127,18 @@ export const options: NextAuthOptions = {
     strategy: "jwt",
   },
 };
+const msalConfig = {
+  auth: {
+    clientId: process.env.AZURE_AD_CLIENT_ID, // Replace with your Azure AD app's client ID
+    authority: `https://login.microsoftonline.com/${process.env.AZURE_AD_TENANT_ID}`, // Replace with your tenant ID
+    redirectUri: process.env.REDIRECT_URI, // Replace with your redirect URI
+  },
+  cache: {
+    cacheLocation: 'localStorage', // Can be 'localStorage' or 'sessionStorage'
+    storeAuthStateInCookie: false, // Set to true if using IE11 or Edge
+  },
+};
 
+
+export const msalInstance = new PublicClientApplication(msalConfig);
 export const handlers = NextAuth(options);

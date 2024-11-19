@@ -103,6 +103,7 @@ export const CreateExtension = async (
       type: "EXTENSION",
       functions: inputModel.functions,
       headers: inputModel.headers,
+      assignedGroups: inputModel.assignedGroups || [],
     };
 
     const validatedFields = validateSchema(modelToSave);
@@ -496,4 +497,51 @@ const validateFunctionSchema = (
     status: "OK",
     response: model,
   };
+};
+// extension-service.ts
+
+export const GetExtensionsForUser = async (
+  userGroups: string[]
+): Promise<ServerActionResponse<ExtensionModel[]>> => {
+  try {
+    const querySpec: SqlQuerySpec = {
+      query:
+        'SELECT * FROM c WHERE ARRAY_LENGTH(ARRAY_INTERSECT(c.assignedGroups, @userGroups)) > 0',
+      parameters: [
+        {
+          name: '@userGroups',
+          value: userGroups,
+        },
+      ],
+    };
+
+    const { resources } = await HistoryContainer()
+      .items.query<ExtensionModel>(querySpec)
+      .fetchAll();
+
+    if (resources) {
+      return {
+        status: 'OK',
+        response: resources,
+      };
+    } else {
+      return {
+        status: 'ERROR',
+        errors: [
+          {
+            message: 'No extensions found',
+          },
+        ],
+      };
+    }
+  } catch (e: any) {
+    return {
+      status: 'ERROR',
+      errors: [
+        {
+          message: `Error fetching extensions: ${e.message}`,
+        },
+      ],
+    };
+  }
 };

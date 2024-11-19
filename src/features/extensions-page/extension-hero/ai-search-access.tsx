@@ -1,21 +1,46 @@
-// AISearch.tsx
-import React, { useState, ChangeEvent } from 'react';
+// ai-search-issues.tsx
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { uniqueId } from '@/features/common/util';
 import { HeroButton } from '@/features/ui/hero';
 import { PaintBucket } from 'lucide-react';
 import { ExtensionModel } from '../extension-services/models';
 import { extensionStore } from '../extension-store';
+import { useSession } from 'next-auth/react'; 
 
 // Import necessary UI components
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from '../../ui/card';
 import { Button } from '@/features/ui/button';
-import { string } from 'zod';
+
+// Import the function to get available groups
+import { getAvailableGroups } from '@/features/access-portal/group-service';
 
 export const AISearch: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
   const [apiKey, setApiKey] = useState<string>('');
   const [indexSearch, setIndexSearch] = useState<string>('');
+  const [selectedGroup, setSelectedGroup] = useState<string>('');
+  const [groups, setGroups] = useState<Array<{ id: string; displayName: string }>>([]);
+  const { data: session } = useSession(); // Get session data
+
+  // Fetch groups when the component mounts
+  useEffect(() => {
+    const fetchGroups = async () => {
+      if (session?.accessToken) {
+        const availableGroups = await getAvailableGroups(session.accessToken);
+        setGroups(availableGroups);
+      } else {
+        console.error('No access token available');
+      }
+    };
+    fetchGroups();
+  }, [session]);
 
   // Event handlers
   const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -30,8 +55,12 @@ export const AISearch: React.FC = () => {
     setIndexSearch(e.target.value);
   };
 
+  const handleGroupChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedGroup(e.target.value);
+  };
+
   const newExample = () => {
-    if (!name || !apiKey || !indexSearch) {
+    if (!name || !apiKey || !indexSearch || !selectedGroup) {
       alert('Please fill in all fields.');
       return;
     }
@@ -85,7 +114,7 @@ export const AISearch: React.FC = () => {
         {
           id: uniqueId(),
           key: 'searchName',
-          value: "ndichatenvsearchqkl6lyswcexbe",
+          value: 'ndichatenvsearchqkl6lyswcexbe',
         },
         {
           id: uniqueId(),
@@ -101,7 +130,7 @@ export const AISearch: React.FC = () => {
       isPublished: false,
       type: 'EXTENSION',
       userId: '',
-      assignedGroups: [''],
+      assignedGroups: [selectedGroup], // Updated to include selected group
     };
 
     extensionStore.openAndUpdate(aiSearchExample);
@@ -110,6 +139,7 @@ export const AISearch: React.FC = () => {
     setName('');
     setApiKey('');
     setIndexSearch('');
+    setSelectedGroup('');
   };
 
   return (
@@ -126,6 +156,7 @@ export const AISearch: React.FC = () => {
             <CardTitle>Enter Bucket Details</CardTitle>
           </CardHeader>
           <CardContent>
+            {/* Existing form fields */}
             <div className="mb-4">
               <label className="block font-medium mb-1">Bucket Name</label>
               <input
@@ -153,12 +184,36 @@ export const AISearch: React.FC = () => {
                 className="w-full px-3 py-2 border rounded"
               />
             </div>
+            {/* New dropdown for group selection */}
+            <div className="mb-4">
+              <label className="block font-medium mb-1">Assign to Group</label>
+              <select
+                value={selectedGroup}
+                onChange={handleGroupChange}
+                className="w-full px-3 py-2 border rounded"
+              >
+                <option value="" disabled>
+                  Select a group
+                </option>
+                {groups.map((group) => (
+                  <option key={group.id} value={group.id}>
+                    {group.displayName}
+                  </option>
+                ))}
+              </select>
+            </div>
           </CardContent>
           <CardFooter className="flex justify-end">
-            <Button className="bg-[#07b0e8] hover:bg-[#07b0e8]/90" onClick={newExample}>
+            <Button
+              className="bg-[#07b0e8] hover:bg-[#07b0e8]/90"
+              onClick={newExample}
+            >
               OK
             </Button>
-            <Button className="border border-input bg-[#07b0e8] hover:bg-[#07b0e8]/90 "  onClick={() => setIsOpen(false)}>
+            <Button
+              className="border border-input bg-[#07b0e8] hover:bg-[#07b0e8]/90"
+              onClick={() => setIsOpen(false)}
+            >
               Cancel
             </Button>
           </CardFooter>
