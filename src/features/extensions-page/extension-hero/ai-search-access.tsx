@@ -18,7 +18,7 @@ import {
 import { Button } from '@/features/ui/button';
 
 // Import the function to get available groups
-import { getAvailableGroups } from '@/features/access-portal/group-service';
+import { getAvailableGroups } from '@/features/access-page/group-service';
 
 export const AISearch: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
