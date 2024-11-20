@@ -134,7 +134,6 @@ export const AISearch: React.FC = () => {
     };
 
     extensionStore.openAndUpdate(aiSearchExample);
-    setIsOpen(false);
     // Reset form fields
     setName('');
     setApiKey('');

@@ -12,7 +12,7 @@ export const ExtensionHero = () => {
     <Hero
       title={
         <>
-          <Shield size={36} strokeWidth={1.5} /> Access Portal
+          <Shield size={36} strokeWidth={1.5} /> Admin Portal
         </>
       }
       description={`Seamlessly connect ${AI_NAME} with internal APIs or external
