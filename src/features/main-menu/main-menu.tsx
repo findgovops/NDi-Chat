@@ -1,3 +1,5 @@
+"use client";
+
 import { MenuTrayToggle } from "@/features/main-menu/menu-tray-toggle";
 import {
   Menu,
