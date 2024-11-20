@@ -2,7 +2,7 @@
 
 import { FC } from "react";
 import { ScrollArea } from "../ui/scroll-area";
-import { ExtensionHero } from "../extensions-page/extension-hero/extension-hero-acess";
+import { ExtensionHero } from "../extensions-page/extension-hero/extension-hero-access";
 import { ExtensionCard } from "../extensions-page/extension-card/extension-card";
 import { ExtensionModel } from "../extensions-page/extension-services/models";
 
