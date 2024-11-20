@@ -56,7 +56,7 @@ export const MainMenu = async () => {
               <BookOpenText {...menuIconProps} />
             </MenuLink>
           </MenuItem>
-          {user.isAdmin || process.env.ADMIN_EMAIL_ADDRESS && (
+          {user.isAdmin && (
             <MenuItem tooltip="access Portal">
               <MenuLink href="/admin" ariaLabel="Go to the Access Portal">
                 <Shield {...menuIconProps} />
