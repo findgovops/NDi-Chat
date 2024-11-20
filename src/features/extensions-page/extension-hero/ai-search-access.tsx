@@ -19,8 +19,10 @@ import { Button } from '@/features/ui/button';
 
 // Import the function to get available groups
 import { getAvailableGroups } from '@/features/access-page/group-service';
+import { useRouter } from 'next/navigation';
 
 export const AISearch: React.FC = () => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
   const [apiKey, setApiKey] = useState<string>('');
@@ -98,6 +100,7 @@ export const AISearch: React.FC = () => {
           id: uniqueId(),
           endpointType: 'POST',
           isOpen: false,
+         
         },
       ],
       headers: [
@@ -131,14 +134,17 @@ export const AISearch: React.FC = () => {
       type: 'EXTENSION',
       userId: '',
       assignedGroups: [selectedGroup], // Updated to include selected group
+      
     };
 
     extensionStore.openAndUpdate(aiSearchExample);
+    setIsOpen(false);
     // Reset form fields
     setName('');
     setApiKey('');
     setIndexSearch('');
     setSelectedGroup('');
+    router.push('/extensions');
   };
 
   return (
