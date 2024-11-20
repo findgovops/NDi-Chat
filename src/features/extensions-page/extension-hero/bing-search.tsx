@@ -72,6 +72,7 @@ export const BingSearch: React.FC = () => {
       isPublished: false,
       type: "EXTENSION",
       userId: "",
+      assignedGroups: [],
     };
 
     extensionStore.openAndUpdate(bingExample);

@@ -48,6 +48,7 @@ class ExtensionState {
         },
       ],
       userId: "",
+      assignedGroups: [],
     };
   }
 
@@ -228,6 +229,7 @@ export const FormToExtensionModel = (formData: FormData): ExtensionModel => {
     type: "EXTENSION",
     functions: functions,
     headers: headers,
+    assignedGroups: [],
   };
 };
 

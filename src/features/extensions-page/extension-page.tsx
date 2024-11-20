@@ -1,34 +1,23 @@
-// extension-page.tsx
+// /src/features/extensions-page/extension-page.tsx
 
-"use client"; 
+"use client";
 
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import { ExtensionModel } from './extension-services/models';
-import { getCurrentUserGroups } from '../auth-page/helpers';
-import { GetExtensionsForUser } from './extension-services/extension-service';
-import { AddExtension } from './add-extension/add-new-extension';
+// Remove client-side data fetching imports
+// import { getCurrentUserGroups } from '../auth-page/helpers';
+// import { GetExtensionsForUser } from './extension-services/extension-service';
+// import { useSession } from 'next-auth/react';
 import { ScrollArea } from '../ui/scroll-area';
 import { ExtensionCard } from './extension-card/extension-card';
 import { ExtensionHero } from './extension-hero/extension-hero';
+import { AddExtension } from './add-extension/add-new-extension';
 
-export const ExtensionPage: FC = () => {
-  const [extensions, setExtensions] = useState<ExtensionModel[]>([]);
+interface Props {
+  extensions: ExtensionModel[];
+}
 
-  useEffect(() => {
-    const fetchExtensions = async () => {
-      const userGroups = await getCurrentUserGroups();
-      const response = await GetExtensionsForUser(userGroups);
-
-      if (response.status === 'OK') {
-        setExtensions(response.response);
-      } else {
-        console.error('Error fetching extensions:', response.errors);
-      }
-    };
-
-    fetchExtensions();
-  }, []);
-
+export const ExtensionPage: FC<Props> = ({ extensions }) => {
   return (
     <ScrollArea className="flex-1">
       <main className="flex flex-1 flex-col">
@@ -49,3 +38,6 @@ export const ExtensionPage: FC = () => {
     </ScrollArea>
   );
 };
+
+// If you prefer default exports
+export default ExtensionPage;
