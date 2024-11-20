@@ -144,7 +144,7 @@ export const AISearch: React.FC = () => {
     setApiKey('');
     setIndexSearch('');
     setSelectedGroup('');
-    router.push('/extensions');
+    router.push('/admin');
   };
 
   return (
