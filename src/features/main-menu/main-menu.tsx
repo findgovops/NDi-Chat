@@ -27,8 +27,8 @@ import { useSession } from "next-auth/react";
 export const MainMenu = () => {
   const { data: session } = useSession();
   const isAdmin = session?.user?.isAdmin;
-  console.log("MainMenu - User:", isAdmin);
   
+
   return (
     <Menu>
       <MenuBar>
