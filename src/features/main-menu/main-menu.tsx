@@ -19,10 +19,12 @@ import {
 import { getCurrentUser } from "../auth-page/helpers";
 import { MenuLink } from "./menu-link";
 import { UserProfile } from "./user-profile";
+import { useSession } from "next-auth/react";
 
 
-export const MainMenu = async () => {
-  const user = await getCurrentUser();
+export const MainMenu = () => {
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.isAdmin;
   
   return (
     <Menu>
@@ -56,14 +58,14 @@ export const MainMenu = async () => {
               <BookOpenText {...menuIconProps} />
             </MenuLink>
           </MenuItem>
-          {user.isAdmin && (
+          {isAdmin && (
             <MenuItem tooltip="admin">
               <MenuLink href="/admin" ariaLabel="Go to the Admin Portal">
                 <Shield {...menuIconProps} />
               </MenuLink>
             </MenuItem>
           )}
-          {user.isAdmin && (
+          {isAdmin && (
             <>
               <MenuItem tooltip="reporting">
                 <MenuLink href="/reporting" ariaLabel="Go to the Admin reporting" >
