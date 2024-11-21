@@ -3,6 +3,7 @@ import "server-only";
 
 import {
   getCurrentUser,
+  getCurrentUserGroups,
   userHashedId,
   userSession,
 } from "@/features/auth-page/helpers";
@@ -340,9 +341,20 @@ export const FindAllExtensionForCurrentUser = async (): Promise<
   ServerActionResponse<Array<ExtensionModel>>
 > => {
   try {
+    const userId = await userHashedId();
+    const user = await getCurrentUser();
+    const userGroups = await getCurrentUserGroups(user.accessToken!);
+
     const querySpec: SqlQuerySpec = {
-      query:
-        "SELECT * FROM root r WHERE r.type=@type AND (r.isPublished=@isPublished OR r.userId=@userId) ORDER BY r.createdAt DESC",
+      query: `
+        SELECT * FROM root r
+        WHERE r.type = @type
+          AND (
+            (r.isPublished = @isPublished AND ARRAY_LENGTH(ARRAY_INTERSECT(r.assignedGroups, @userGroups)) > 0)
+            OR r.userId = @userId
+          )
+        ORDER BY r.createdAt DESC
+      `,
       parameters: [
         {
           name: "@type",
@@ -353,12 +365,17 @@ export const FindAllExtensionForCurrentUser = async (): Promise<
           value: true,
         },
         {
+          name: "@userGroups",
+          value: userGroups,
+        },
+        {
           name: "@userId",
-          value: await userHashedId(),
+          value: userId,
         },
       ],
     };
 
+    
     const { resources } = await HistoryContainer()
       .items.query<ExtensionModel>(querySpec)
       .fetchAll();
@@ -378,7 +395,6 @@ export const FindAllExtensionForCurrentUser = async (): Promise<
     };
   }
 };
-
 export const CreateChatWithExtension = async (
   extensionId: string
 ): Promise<ServerActionResponse<ChatThreadModel>> => {

@@ -84,4 +84,5 @@ export type UserModel = {
   image: string;
   email: string;
   isAdmin: boolean;
+  accessToken?: string;
 };
