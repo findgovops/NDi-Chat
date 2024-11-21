@@ -349,11 +349,13 @@ export const FindAllExtensionForCurrentUser = async (): Promise<
     const querySpec: SqlQuerySpec = {
       query: `
       SELECT * FROM c
-  WHERE c.type = @type
-    AND (
-      (c.isPublished = @isPublished AND ARRAY_LENGTH(ARRAY_INTERSECT(c.assignedGroups, @userGroups)) > 0)
-      OR c.userId = @userId
-        )
+WHERE c.type = @type
+  AND (
+    (c.isPublished = @isPublished AND EXISTS (
+      SELECT VALUE g FROM g IN c.assignedGroups WHERE ARRAY_CONTAINS(@userGroups, g)
+    ))
+    OR c.userId = @userId
+  )
       `,
       parameters: [
         {
