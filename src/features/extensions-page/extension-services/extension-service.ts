@@ -343,18 +343,16 @@ export const FindAllExtensionForCurrentUser = async (): Promise<
   try {
     const userId = await userHashedId();
     const user = await getCurrentUser();
-    
-    let userGroups = await getCurrentUserGroups(user.accessToken!);
-    if (!userGroups || userGroups.length === 0) {
-      console.warn("User groups are empty. Adjusting query to prevent errors.");
-      userGroups = ["NoGroups"]; // Use a dummy value that won't match any group
-    }
+    const isAdmin = user.isAdmin;
+    const userGroups = await getCurrentUserGroups(user.accessToken!);
+
     const querySpec: SqlQuerySpec = {
       query: `
         SELECT * FROM root r
         WHERE r.type = @type
           AND (
-            (r.isPublished = @isPublished AND ARRAY_LENGTH(ARRAY_INTERSECT(r.assignedGroups, @userGroups)) > 0)
+            (${isAdmin ? 'true' : 'false'})
+            OR (r.isPublished = @isPublished AND ARRAY_LENGTH(ARRAY_INTERSECT(r.assignedGroups, @userGroups)) > 0)
             OR r.userId = @userId
           )
         ORDER BY r.createdAt DESC
