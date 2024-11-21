@@ -343,8 +343,12 @@ export const FindAllExtensionForCurrentUser = async (): Promise<
   try {
     const userId = await userHashedId();
     const user = await getCurrentUser();
-    const userGroups = await getCurrentUserGroups(user.accessToken!);
-
+    
+    let userGroups = await getCurrentUserGroups(user.accessToken!);
+    if (!userGroups || userGroups.length === 0) {
+      console.warn("User groups are empty. Adjusting query to prevent errors.");
+      userGroups = ["NoGroups"]; // Use a dummy value that won't match any group
+    }
     const querySpec: SqlQuerySpec = {
       query: `
         SELECT * FROM root r
