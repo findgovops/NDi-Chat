@@ -1,4 +1,4 @@
-import { DefaultSession } from "next-auth";
+import { DefaultSession, DefaultUser } from "next-auth";
 
 // https://next-auth.js.org/getting-started/typescript#module-augmentation
 
@@ -18,7 +18,7 @@ declare module "next-auth" {
     
   }
 
-  interface User {
+  interface User extends DefaultUser{
     isAdmin: boolean;
     
   }
