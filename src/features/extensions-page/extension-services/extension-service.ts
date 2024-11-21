@@ -347,16 +347,9 @@ export const FindAllExtensionForCurrentUser = async (): Promise<
     const userGroups = await getCurrentUserGroups(user.accessToken!);
 
     const querySpec: SqlQuerySpec = {
-      query: `
-        SELECT * FROM root r
-        WHERE r.type = @type
-          AND (
-            (${isAdmin ? 'true' : 'false'})
-            OR (r.isPublished = @isPublished AND ARRAY_LENGTH(ARRAY_INTERSECT(r.assignedGroups, @userGroups)) > 0)
-            OR r.userId = @userId
-          )
-        ORDER BY r.createdAt DESC
-      `,
+      query: 
+        "SELECT * FROM root r WHERE r.type=@type AND (r.isPublished=@isPublished OR r.userId=@userId) ORDER BY r.createdAt DESC"
+      ,
       parameters: [
         {
           name: "@type",
