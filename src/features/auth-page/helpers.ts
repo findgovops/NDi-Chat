@@ -14,6 +14,7 @@ export const userSession = async (): Promise<UserModel | null> => {
       image: session.user.image!,
       email: session.user.email!,
       isAdmin: session.user.isAdmin!,
+      accessToken: session.accessToken
     };
   }
 
