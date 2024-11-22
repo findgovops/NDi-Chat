@@ -19,7 +19,7 @@ import { Button } from '@/features/ui/button';
 
 // Import the function to get available groups
 import { getAvailableGroups } from '@/features/access-page/group-service';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router'; // Updated import
 
 export const AISearch: React.FC = () => {
   const router = useRouter();
