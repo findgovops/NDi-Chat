@@ -27,7 +27,7 @@ import { AddFunction } from "./add-function";
 import { EndpointHeader } from "./endpoint-header";
 import { ErrorMessages } from "./error-messages";
 import { getAvailableGroups } from "@/features/access-page/group-service";
-import { useRouter } from "next/router";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface Props {}
 
@@ -42,7 +42,8 @@ export const AddExtension: FC<Props> = (props) => {
 
   const { data: session } = useSession(); // Get session data
   const router = useRouter();
-  const { assignedGroupId } = router.query;
+  const searchParams = useSearchParams();
+  const assignedGroupId = searchParams.get('assignedGroupId');
 
   // Fetch groups when the component mounts
   useEffect(() => {
