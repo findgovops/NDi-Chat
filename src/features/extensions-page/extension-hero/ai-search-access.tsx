@@ -144,7 +144,10 @@ export const AISearch: React.FC = () => {
     setApiKey('');
     setIndexSearch('');
     setSelectedGroup('');
-    router.push(`/extensions/?assignedGroupId=${selectedGroup}`);
+    router.push({
+      pathname: '/extensions/new',
+      query: { assignedGroupId: selectedGroup },
+    });
   };
 
   return (
