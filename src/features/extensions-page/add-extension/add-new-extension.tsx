@@ -4,7 +4,7 @@ import { ServerActionResponse } from "@/features/common/server-action-response";
 import { LoadingIndicator } from "@/features/ui/loading";
 import { Textarea } from "@/features/ui/textarea";
 import { useSession } from "next-auth/react";
-import { FC } from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
@@ -26,6 +26,7 @@ import {
 import { AddFunction } from "./add-function";
 import { EndpointHeader } from "./endpoint-header";
 import { ErrorMessages } from "./error-messages";
+import { getAvailableGroups } from "@/features/access-page/group-service";
 
 interface Props {}
 
@@ -34,6 +35,35 @@ export const AddExtension: FC<Props> = (props) => {
 
   const { data } = useSession();
   const initialState: ServerActionResponse | undefined = undefined;
+
+  const [groups, setGroups] = useState<Array<{ id: string; displayName: string }>>([]);
+  const [selectedGroups, setSelectedGroups] = useState<string[]>([]); // Updated to an array
+
+  const { data: session } = useSession(); // Get session data
+
+  // Fetch groups when the component mounts
+  useEffect(() => {
+    const fetchGroups = async () => {
+      if (session?.accessToken) {
+        const availableGroups = await getAvailableGroups(session.accessToken);
+        setGroups(availableGroups);
+      } else {
+        console.error('No access token available');
+      }
+    };
+    fetchGroups();
+  }, [session]);
+
+  const handleGroupChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const options = e.target.options;
+    const selected: string[] = [];
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].selected) {
+        selected.push(options[i].value);
+      }
+    }
+    setSelectedGroups(selected);
+  };
 
   const [formState, formAction] = useFormState(
     AddOrUpdateExtension,
@@ -100,6 +130,22 @@ export const AddExtension: FC<Props> = (props) => {
                   name="executionSteps"
                   placeholder="Describe specialties and the steps to execute the extension"
                 />
+              </div>
+              <div className="mb-4">
+                <label className="block font-medium mb-1">Assign to Group(s)</label>
+                <select
+                  name="assignedGroups"
+                  multiple
+                  value={selectedGroups}
+                  onChange={handleGroupChange}
+                  className="w-full px-3 py-2 border rounded"
+                >
+                  {groups.map((group) => (
+                    <option key={group.id} value={group.id}>
+                      {group.displayName}
+                    </option>
+                  ))}
+                </select>
               </div>
               <EndpointHeader />
               <AddFunction />

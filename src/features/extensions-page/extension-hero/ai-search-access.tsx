@@ -133,7 +133,7 @@ export const AISearch: React.FC = () => {
       isPublished: false,
       type: 'EXTENSION',
       userId: '',
-      assignedGroups: [selectedGroup], // Updated to include selected group
+      assignedGroups: [selectedGroup], 
       
     };
 
@@ -193,6 +193,8 @@ export const AISearch: React.FC = () => {
             <div className="mb-4">
               <label className="block font-medium mb-1">Assign to Group</label>
               <select
+                name="assignedGroups"
+                multiple
                 value={selectedGroup}
                 onChange={handleGroupChange}
                 className="w-full px-3 py-2 border rounded"

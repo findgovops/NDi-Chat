@@ -194,6 +194,7 @@ export const FormToExtensionModel = (formData: FormData): ExtensionModel => {
   const headerKeys = formData.getAll("header-key[]");
   const headerValues = formData.getAll("header-value[]");
   const headerIds = formData.getAll("header-id[]");
+  const assignedGroups = formData.getAll('assignedGroups') as string[];
 
   const headers: Array<HeaderModel> = headerKeys.map((k, index) => {
     return {
@@ -229,7 +230,7 @@ export const FormToExtensionModel = (formData: FormData): ExtensionModel => {
     type: "EXTENSION",
     functions: functions,
     headers: headers,
-    assignedGroups: [],
+    assignedGroups: assignedGroups,
   };
 };
 
