@@ -27,7 +27,7 @@ import { AddFunction } from "./add-function";
 import { EndpointHeader } from "./endpoint-header";
 import { ErrorMessages } from "./error-messages";
 import { getAvailableGroups } from "@/features/access-page/group-service";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 
 interface Props {}
 
@@ -42,29 +42,28 @@ export const AddExtension: FC<Props> = (props) => {
 
   const { data: session } = useSession(); // Get session data
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const assignedGroupId = searchParams.get('assignedGroupId');
+  const { assignedGroupId } = router.query;
 
   // Fetch groups when the component mounts
   useEffect(() => {
     const fetchGroups = async () => {
-      if (session?.accessToken) {
-        const availableGroups = await getAvailableGroups(session.accessToken);
-        setGroups(availableGroups);
-  
-        // Pre-select the group if assignedGroupId is present
-        if (assignedGroupId) {
-          const groupIds = Array.isArray(assignedGroupId)
-            ? assignedGroupId
-            : [assignedGroupId];
-          setSelectedGroups(groupIds);
-        }
-      } else {
-        console.error('No access token available');
+    if (session?.accessToken) {
+      const availableGroups = await getAvailableGroups(session.accessToken);
+      setGroups(availableGroups);
+
+      // Pre-select the group if assignedGroupId is present
+      if (assignedGroupId) {
+        const groupIds = Array.isArray(assignedGroupId)
+          ? assignedGroupId
+          : [assignedGroupId];
+        setSelectedGroups(groupIds);
       }
-    };
-    fetchGroups();
-  }, [session, assignedGroupId]);
+    } else {
+      console.error('No access token available');
+    }
+  };
+  fetchGroups();
+}, [session, assignedGroupId]);
 
   const handleGroupChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const options = e.target.options;
