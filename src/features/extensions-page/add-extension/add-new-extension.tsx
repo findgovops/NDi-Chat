@@ -47,23 +47,15 @@ export const AddExtension: FC<Props> = (props) => {
   // Fetch groups when the component mounts
   useEffect(() => {
     const fetchGroups = async () => {
-    if (session?.accessToken) {
-      const availableGroups = await getAvailableGroups(session.accessToken);
-      setGroups(availableGroups);
-
-      // Pre-select the group if assignedGroupId is present
-      if (assignedGroupId) {
-        const groupIds = Array.isArray(assignedGroupId)
-          ? assignedGroupId
-          : [assignedGroupId];
-        setSelectedGroups(groupIds);
+      if (session?.accessToken) {
+        const availableGroups = await getAvailableGroups(session.accessToken);
+        setGroups(availableGroups);
+      } else {
+        console.error('No access token available');
       }
-    } else {
-      console.error('No access token available');
-    }
-  };
-  fetchGroups();
-}, [session, assignedGroupId]);
+    };
+    fetchGroups();
+  }, [session]);
 
   const handleGroupChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const options = e.target.options;
