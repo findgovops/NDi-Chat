@@ -19,7 +19,7 @@ import { Button } from '@/features/ui/button';
 
 // Import the function to get available groups
 import { getAvailableGroups } from '@/features/access-page/group-service';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 
 export const AISearch: React.FC = () => {
   const router = useRouter();
@@ -144,7 +144,10 @@ export const AISearch: React.FC = () => {
     setApiKey('');
     setIndexSearch('');
     setSelectedGroup('');
-    router.push('/extensions')
+    router.push({
+      pathname: '/extensions',
+      query: { assignedGroupId: selectedGroup },
+    });
   };
 
   return (
