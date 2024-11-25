@@ -3,10 +3,12 @@ import { HeroButton } from "@/features/ui/hero";
 import { Globe } from "lucide-react";
 import { ExtensionModel } from "../extension-services/models";
 import { extensionStore } from "../extension-store";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/features/ui/card";
 import { Button } from "@/features/ui/button";
 import { useRouter } from 'next/navigation';
+import { getAvailableGroups } from "@/features/access-page/group-service";
+import { useSession } from "next-auth/react";
 
 export const BingSearchAdmin: React.FC = () => {
   const router = useRouter();
@@ -14,7 +16,7 @@ export const BingSearchAdmin: React.FC = () => {
   const [API, setApiKey] = useState<string>('');
   const [selectedGroup, setSelectedGroup] = useState<string>('');
   const [groups, setGroups] = useState<Array<{ id: string; displayName: string }>>([]);
-
+  const { data: session } = useSession();
   const handleApiKeyChange = (e: ChangeEvent<HTMLInputElement>) => {
     setApiKey(e.target.value);
   };
@@ -86,6 +88,22 @@ export const BingSearchAdmin: React.FC = () => {
     router.push('/extensions')
   };
 
+  useEffect(() => {
+    const fetchGroups = async () => {
+      if (session?.accessToken) {
+        const availableGroups = await getAvailableGroups(session.accessToken);
+        setGroups(availableGroups);
+      } else {
+        console.error('No access token available');
+      }
+    };
+    fetchGroups();
+  }, [session]);
+
+    function handleGroupChange(e: ChangeEvent<HTMLSelectElement>): void {
+        setSelectedGroup(e.target.value);
+    }
+
   return (
     <>
     <HeroButton
@@ -108,6 +126,23 @@ export const BingSearchAdmin: React.FC = () => {
             className="w-full px-3 py-2 border rounded"
           />
         </div>
+        <div className="mb-4">
+              <label className="block font-medium mb-1">Assign to Group</label>
+              <select
+                value={selectedGroup}
+                onChange={handleGroupChange}
+                className="w-full px-3 py-2 border rounded"
+              >
+                <option value="" disabled>
+                  Select a group
+                </option>
+                {groups.map((group) => (
+                  <option key={group.id} value={group.id}>
+                    {group.displayName}
+                  </option>
+                ))}
+              </select>
+            </div>
       </CardContent>
       <CardFooter className="flex justify-end">
         <Button className="bg-[#07b0e8] hover:bg-[#07b0e8]/90" onClick={newExample}>
