@@ -78,6 +78,7 @@ export const ExtensionModelSchema = z.object({
   functions: z.array(ExtensionFunctionSchema), // validation is done in the function schema
   type: z.literal(EXTENSION_ATTRIBUTE),
   assignedGroups: z.array(z.string()),
+  link: z.string(),
 });
 
 export interface GroupModel {

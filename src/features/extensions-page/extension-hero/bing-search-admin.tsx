@@ -79,6 +79,7 @@ export const BingSearchAdmin: React.FC = () => {
       type: "EXTENSION",
       userId: "",
       assignedGroups: [selectedGroup],
+      link: ""
     };
 
     extensionStore.openAndUpdate(bingExample);

@@ -34,6 +34,7 @@ export const ExtensionCard: FC<Props> = (props) => {
       </CardHeader>
       <CardContent className="text-muted-foreground flex-1">
         {extension.description}
+        {extension.link}
       </CardContent>
       <CardFooter className="gap-1 content-stretch f">
         {props.showContextMenu && (

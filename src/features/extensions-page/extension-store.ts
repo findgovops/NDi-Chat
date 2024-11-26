@@ -49,6 +49,7 @@ class ExtensionState {
       ],
       userId: "",
       assignedGroups: [],
+      link: "",
     };
   }
 
@@ -231,6 +232,7 @@ export const FormToExtensionModel = (formData: FormData): ExtensionModel => {
     functions: functions,
     headers: headers,
     assignedGroups: assignedGroups,
+    link: formData.get("link") as string,
   };
 };
 

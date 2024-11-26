@@ -29,6 +29,7 @@ export const AISearch: React.FC = () => {
   const [indexSearch, setIndexSearch] = useState<string>('');
   const [selectedGroup, setSelectedGroup] = useState<string>('');
   const [groups, setGroups] = useState<Array<{ id: string; displayName: string }>>([]);
+  const [link, setLink] = useState<string>('');
   const { data: session } = useSession(); // Get session data
 
   // Fetch groups when the component mounts
@@ -59,6 +60,10 @@ export const AISearch: React.FC = () => {
 
   const handleGroupChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelectedGroup(e.target.value);
+  };
+
+  const handleLinkChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setLink(e.target.value);
   };
 
   const newExample = () => {
@@ -133,7 +138,8 @@ export const AISearch: React.FC = () => {
       isPublished: false,
       type: 'EXTENSION',
       userId: '',
-      assignedGroups: [selectedGroup], // Updated to include selected group
+      assignedGroups: [selectedGroup], 
+      link: ""
       
     };
 
@@ -144,6 +150,7 @@ export const AISearch: React.FC = () => {
     setApiKey('');
     setIndexSearch('');
     setSelectedGroup('');
+    setLink('');
     router.push('/extensions')
   };
 
@@ -186,6 +193,15 @@ export const AISearch: React.FC = () => {
                 type="text"
                 value={indexSearch}
                 onChange={handleIndexSearchChange}
+                className="w-full px-3 py-2 border rounded"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block font-medium mb-1">Link</label>
+              <input
+                type="text"
+                value={link}
+                onChange={handleLinkChange}
                 className="w-full px-3 py-2 border rounded"
               />
             </div>
