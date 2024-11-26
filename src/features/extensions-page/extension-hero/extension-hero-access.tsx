@@ -3,8 +3,9 @@
 import { AI_NAME } from "@/features/theme/theme-config";
 import { Hero } from "@/features/ui/hero";
 import { PaintBucket, Shield } from "lucide-react";
-import { AISearch } from "./ai-search-access";
+import { AISearch } from "./ai-search-admin";
 import { BingSearch } from "./bing-search";
+import { BingSearchAdmin } from "./bing-search-admin";
 
 export const ExtensionHero = () => {
 
@@ -19,6 +20,7 @@ export const ExtensionHero = () => {
         resources`}
     >
       <AISearch />
+      <BingSearchAdmin />
     </Hero>
   );
 };

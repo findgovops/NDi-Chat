@@ -105,6 +105,7 @@ export const CreateExtension = async (
       functions: inputModel.functions,
       headers: inputModel.headers,
       assignedGroups: inputModel.assignedGroups || [],
+      link: inputModel.link,
     };
 
     const validatedFields = validateSchema(modelToSave);

@@ -131,7 +131,16 @@ export const AddExtension: FC<Props> = (props) => {
                   required
                   defaultValue={extension.executionSteps}
                   name="executionSteps"
-                  placeholder="Describe specialties and the steps to execute the extension"
+                  placeholder="Describe specialties and the steps to execute the bucket"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="description">Sharepoint link</Label>
+                <Textarea
+                  required
+                  defaultValue={extension.link}
+                  name="link"
+                  placeholder="Sharepoint link for the bucket"
                 />
               </div>
               <div className="mb-4">
