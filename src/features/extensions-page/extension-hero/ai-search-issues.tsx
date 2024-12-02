@@ -102,6 +102,7 @@ export const AISearch: React.FC = () => {
       type: 'EXTENSION',
       userId: '',
       assignedGroups: [''],
+      link: '',
     };
 
     extensionStore.openAndUpdate(aiSearchExample);
