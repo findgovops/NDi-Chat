@@ -41,7 +41,7 @@ export const ExtensionCard: FC<Props> = (props) => {
             rel="noopener noreferrer"
             className="text-blue-500 hover:underline flex items-center"
           >
-            {extension.link}
+            Link to Sharepoint Page
             {/* Optional: Add an external link icon */}
             <ExternalLink className="ml-1 h-4 w-4" />
           </a>
