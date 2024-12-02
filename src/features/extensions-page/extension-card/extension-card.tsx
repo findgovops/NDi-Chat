@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/features/ui/button";
-import { Pencil } from "lucide-react";
+import { ExternalLink, Pencil } from "lucide-react";
 import { FC } from "react";
 import {
   Card,
@@ -33,8 +33,19 @@ export const ExtensionCard: FC<Props> = (props) => {
         )}
       </CardHeader>
       <CardContent className="text-muted-foreground flex-1">
-        {extension.description} <br />
-        {extension.link}
+        {extension.description} <br /><br />
+        {extension.link && (
+          <a
+            href={extension.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 hover:underline flex items-center"
+          >
+            {extension.link}
+            {/* Optional: Add an external link icon */}
+            <ExternalLink className="ml-1 h-4 w-4" />
+          </a>
+        )}
       </CardContent>
       <CardFooter className="gap-1 content-stretch f">
         {props.showContextMenu && (
