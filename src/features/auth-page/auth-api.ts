@@ -149,18 +149,18 @@ export const options: NextAuthOptions = {
     strategy: "jwt",
   },
 };
-const msalConfig = {
-  auth: {
-    clientId: process.env.AZURE_AD_CLIENT_ID, // Replace with your Azure AD app's client ID
-    authority: `https://login.microsoftonline.com/${process.env.AZURE_AD_TENANT_ID}`, // Replace with your tenant ID
-    redirectUri: process.env.REDIRECT_URI, // Replace with your redirect URI
-  },
-  cache: {
-    cacheLocation: 'localStorage', // Can be 'localStorage' or 'sessionStorage'
-    storeAuthStateInCookie: false, // Set to true if using IE11 or Edge
-  },
-};
+// const msalConfig = {
+//   auth: {
+//     clientId: process.env.AZURE_AD_CLIENT_ID, // Replace with your Azure AD app's client ID
+//     authority: `https://login.microsoftonline.com/${process.env.AZURE_AD_TENANT_ID}`, // Replace with your tenant ID
+//     redirectUri: process.env.REDIRECT_URI, // Replace with your redirect URI
+//   },
+//   cache: {
+//     cacheLocation: 'localStorage', // Can be 'localStorage' or 'sessionStorage'
+//     storeAuthStateInCookie: false, // Set to true if using IE11 or Edge
+//   },
+// };
 
 
-export const msalInstance = new PublicClientApplication(msalConfig);
+//export const msalInstance = new PublicClientApplication(msalConfig);
 export const handlers = NextAuth(options);

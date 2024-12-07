@@ -4,7 +4,7 @@ import { RedirectToPage } from "../common/navigation-helpers";
 import { isRedirectError, redirect} from "next/dist/client/components/redirect";
 import { options } from "./auth-api";
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
-import { msalInstance } from './auth-api';
+//import { msalInstance } from './auth-api';
 
 export const userSession = async (): Promise<UserModel | null> => {
   const session = await getServerSession(options);
