@@ -31,7 +31,7 @@ export const LogIn: FC<LoginProps> = (props) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
-        <Button className="bg-[#07b0e8] hover:bg-[#07b0e8]/90" onClick={() => signIn("azure-ad")}> Microsoft 365</Button>
+        <Button className="bg-[#07b0e8] hover:bg-[#07b0e8]/90" onClick={() => signIn("azure-ad")}>Log In</Button>
         {props.isDevMode ? (
           <Button onClick={() => signIn("localdev")}>
             Basic Auth (DEV ONLY)
