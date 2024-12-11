@@ -133,6 +133,9 @@ export const options: NextAuthOptions = {
     async jwt({ token, user, account }) {
       if (account) {
         token.accessToken = account.access_token as string | undefined;
+        token.accessTokenExpires = account.expires_at
+          ? account.expires_at * 1000
+          : null; // Convert to milliseconds
       }
       if (user) {
         token.isAdmin = user.isAdmin;
@@ -142,11 +145,16 @@ export const options: NextAuthOptions = {
     async session({ session, token }) {
       session.accessToken = token.accessToken;
       session.user.isAdmin = token.isAdmin as boolean;
+      if (typeof token.accessTokenExpires === "number") {
+        session.expires = new Date(token.accessTokenExpires).toISOString();
+      }
       return session;
     },
   },
   session: {
     strategy: "jwt",
+    maxAge: 60 * 60,
+    updateAge: 10 * 60,
   },
 };
 // const msalConfig = {
