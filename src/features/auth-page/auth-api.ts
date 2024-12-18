@@ -134,7 +134,7 @@ export const options: NextAuthOptions = {
       if (account) {
         token.accessToken = account.access_token as string | undefined;
         token.accessTokenExpires = account.expires_at
-          ? account.expires_at * 1000
+          ? account.expires_at * 60
           : null; // Convert to milliseconds
       }
       if (user) {

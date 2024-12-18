@@ -85,7 +85,7 @@ export const AISearch: React.FC = () => {
         {
           id: uniqueId(),
           key: 'searchName',
-          value: "ndichatenvsearchqkl6lyswcexbe",
+          value: process.env.AZURE_SEARCH_NAME,
         },
         {
           id: uniqueId(),
