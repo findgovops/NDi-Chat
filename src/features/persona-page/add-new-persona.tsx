@@ -36,7 +36,7 @@ export const AddNewPersona: FC<Props> = (props) => {
   const { data: session } = useSession(); // Get session data
 
   const { isOpened, persona } = usePersonaState();
-  
+
   useEffect(() => {
     const fetchGroups = async () => {
       if (session?.accessToken) {
@@ -140,7 +140,12 @@ export const AddNewPersona: FC<Props> = (props) => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block font-medium mb-1">Assign to Group(s)</label>
+                {data?.user?.isAdmin && (
+                  <>
+                    <label className="block font-medium mb-1">
+                      Assign to Group(s)
+                    </label>
+                
                 <select
                   name="assignedGroups"
                   multiple
@@ -154,6 +159,8 @@ export const AddNewPersona: FC<Props> = (props) => {
                     </option>
                   ))}
                 </select>
+                  </>
+                )}
               </div>
             </div>
           </ScrollArea>
