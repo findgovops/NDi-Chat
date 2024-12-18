@@ -16,6 +16,7 @@ class PersonaState {
     isPublished: false,
     type: "PERSONA",
     userId: "",
+    assignedGroups: [],
   };
 
   public isOpened: boolean = false;
@@ -86,6 +87,9 @@ export const addOrUpdatePersona = async (previous: any, formData: FormData) => {
 };
 
 export const FormDataToPersonaModel = (formData: FormData): PersonaModel => {
+  
+  const assignedGroups = formData.getAll('assignedGroups') as string[];
+
   return {
     id: formData.get("id") as string,
     name: formData.get("name") as string,
@@ -95,5 +99,6 @@ export const FormDataToPersonaModel = (formData: FormData): PersonaModel => {
     userId: "", // the user id is set on the server once the user is authenticated
     createdAt: new Date(),
     type: PERSONA_ATTRIBUTE,
+    assignedGroups: assignedGroups,
   };
 };

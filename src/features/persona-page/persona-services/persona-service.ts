@@ -1,7 +1,7 @@
 "use server";
 import "server-only";
 
-import { getCurrentUser, userHashedId } from "@/features/auth-page/helpers";
+import { getCurrentUser, getCurrentUserGroups, userHashedId } from "@/features/auth-page/helpers";
 import { UpsertChatThread } from "@/features/chat-page/chat-services/chat-thread-service";
 import {
   CHAT_THREAD_ATTRIBUTE,
@@ -87,6 +87,7 @@ export const CreatePersona = async (
       userId: await userHashedId(),
       createdAt: new Date(),
       type: "PERSONA",
+      assignedGroups: [],
     };
 
     const valid = ValidateSchema(modelToSave);
@@ -243,9 +244,23 @@ export const FindAllPersonaForCurrentUser = async (): Promise<
   ServerActionResponse<Array<PersonaModel>>
 > => {
   try {
+    const userId = await userHashedId();
+    const user = await getCurrentUser();
+    const isAdmin = user.isAdmin;
+    const userGroups = await getCurrentUserGroups(user.accessToken!);
+    
     const querySpec: SqlQuerySpec = {
       query:
-        "SELECT * FROM root r WHERE r.type=@type AND (r.isPublished=@isPublished OR r.userId=@userId) ORDER BY r.createdAt DESC",
+        `
+      SELECT * FROM c
+WHERE c.type = @type
+  AND (
+    (c.isPublished = @isPublished AND EXISTS (
+      SELECT VALUE g FROM g IN c.assignedGroups WHERE ARRAY_CONTAINS(@userGroups, g)
+    ))
+    OR c.userId = @userId
+  )
+      `,
       parameters: [
         {
           name: "@type",
@@ -256,8 +271,12 @@ export const FindAllPersonaForCurrentUser = async (): Promise<
           value: true,
         },
         {
+          name: "@userGroups",
+          value: userGroups,
+        },
+        {
           name: "@userId",
-          value: await userHashedId(),
+          value: userId,
         },
       ],
     };
