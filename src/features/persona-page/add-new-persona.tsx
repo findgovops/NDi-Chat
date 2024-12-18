@@ -145,8 +145,7 @@ export const AddNewPersona: FC<Props> = (props) => {
                     <label className="block font-medium mb-1">
                       Assign to Group(s)
                     </label>
-                  </>
-                )}
+                
                 <select
                   name="assignedGroups"
                   multiple
@@ -160,6 +159,8 @@ export const AddNewPersona: FC<Props> = (props) => {
                     </option>
                   ))}
                 </select>
+                </>
+                )}
               </div>
             </div>
           </ScrollArea>
