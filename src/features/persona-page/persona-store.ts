@@ -45,12 +45,14 @@ class PersonaState {
     name: string;
     description: string;
     personaMessage: string;
+    assignedGroups: string[];
   }) {
     this.persona = {
       ...this.defaultModel,
       name: persona.name,
       description: persona.description,
       personaMessage: persona.personaMessage,
+      assignedGroups: persona.assignedGroups,
     };
     this.isOpened = true;
   }
@@ -87,7 +89,7 @@ export const addOrUpdatePersona = async (previous: any, formData: FormData) => {
 };
 
 export const FormDataToPersonaModel = (formData: FormData): PersonaModel => {
-  
+
   const assignedGroups = formData.getAll('assignedGroups') as string[];
 
   return {
