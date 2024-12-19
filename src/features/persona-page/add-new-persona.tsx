@@ -159,7 +159,7 @@ export const AddNewPersona: FC<Props> = (props) => {
                     </option>
                   ))}
                 </select>
-                </>
+                  </>
                 )}
               </div>
             </div>

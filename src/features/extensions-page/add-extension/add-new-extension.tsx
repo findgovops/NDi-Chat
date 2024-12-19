@@ -144,6 +144,8 @@ export const AddExtension: FC<Props> = (props) => {
                 />
               </div>
               <div className="mb-4">
+              {data?.user?.isAdmin && (
+                  <>
                 <label className="block font-medium mb-1">Assign to Group(s)</label>
                 <select
                   name="assignedGroups"
@@ -158,6 +160,8 @@ export const AddExtension: FC<Props> = (props) => {
                     </option>
                   ))}
                 </select>
+                </>
+                )}
               </div>
               <EndpointHeader />
               <AddFunction />
