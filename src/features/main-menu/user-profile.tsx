@@ -45,7 +45,7 @@ export const UserProfile = () => {
               {session?.user?.isAdmin ? "Admin" : ""}
             </p>
             <p className="text-xs leading-none text-muted-foreground"> 
-              <a href="https://teams.microsoft.com/l/message/19:5cbadd59-0510-4bac-a185-d59aeb344b1e_f17e19a6-9612-428a-866d-2953b3e7e986@unq.gbl.spaces/1734551342793?context=%7B%22contextType%22%3A%22chat%22%7D" className="no-underline text-muted-foreground hover:underline">
+              <a href="https://netdez.sharepoint.com/sites/MyNDi/SitePages/NDiGPT-Terms-of-Service-&.aspx" className="no-underline text-muted-foreground hover:underline">
               <Label className="text-xs text-[#07b0e8] leading-none" htmlFor="description">Terms of Use</Label> 
               </a>
             </p>
