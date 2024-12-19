@@ -17,6 +17,7 @@ import { SqlQuerySpec } from "@azure/cosmos";
 import { PERSONA_ATTRIBUTE, PersonaModel, PersonaModelSchema } from "./models";
 
 interface PersonaInput {
+  assignedGroups: string[];
   name: string;
   description: string;
   personaMessage: string;
@@ -87,7 +88,7 @@ export const CreatePersona = async (
       userId: await userHashedId(),
       createdAt: new Date(),
       type: "PERSONA",
-      assignedGroups: [],
+      assignedGroups: user.isAdmin ? (props.assignedGroups ?? []) : [],
     };
 
     const valid = ValidateSchema(modelToSave);
@@ -199,6 +200,7 @@ export const UpsertPersona = async (
           ? personaInput.isPublished
           : persona.isPublished,
         createdAt: new Date(),
+        assignedGroups: user.isAdmin ? (personaInput.assignedGroups ?? persona.assignedGroups) : persona.assignedGroups,
       };
 
       const validationResponse = ValidateSchema(modelToUpdate);
