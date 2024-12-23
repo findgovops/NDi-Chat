@@ -38,10 +38,10 @@ export const AddExtension: FC<Props> = (props) => {
   const initialState: ServerActionResponse | undefined = undefined;
 
   const [groups, setGroups] = useState<Array<{ id: string; displayName: string }>>([]);
-  const [selectedGroups, setSelectedGroups] = useState<string[]>([]); // Updated to an array
+  const [selectedGroups, setSelectedGroups] = useState<string[]>([]); 
 
   const { data: session } = useSession(); // Get session data
-  const router = useRouter();
+
 
 
   // Fetch groups when the component mounts
