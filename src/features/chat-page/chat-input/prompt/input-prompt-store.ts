@@ -35,7 +35,10 @@ class InputPromptState {
     this.errors = errors;
   }
 
-  public selectPrompt(prompt: PromptModel) {
+  public selectPrompt(prompt: Omit<PromptModel, "assignedGroups"> & {
+      assignedGroups: readonly string[];
+    }
+  ) {
     chatStore.updateInput(prompt.description);
     this.selectedPrompt = {
       ...prompt,
