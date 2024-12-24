@@ -7,6 +7,7 @@ import { SetInputRowsToMax } from "../use-chat-input-dynamic-height";
 class InputPromptState {
   public errors: string[] = [];
   public prompts: Array<PromptModel> = [];
+  public selectedPrompt: PromptModel | null = null;
   public isOpened: boolean = false;
   public isLoading: boolean = false;
 
@@ -36,6 +37,10 @@ class InputPromptState {
 
   public selectPrompt(prompt: PromptModel) {
     chatStore.updateInput(prompt.description);
+    this.selectedPrompt = {
+      ...prompt,
+      assignedGroups: [...prompt.assignedGroups], // <— convert to mutable
+    };
     this.isOpened = false;
     this.errors = [];
     SetInputRowsToMax();
