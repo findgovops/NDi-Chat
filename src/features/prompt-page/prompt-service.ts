@@ -10,7 +10,7 @@ import {
   PromptModelSchema,
 } from "@/features/prompt-page/models";
 import { SqlQuerySpec } from "@azure/cosmos";
-import { getCurrentUser, userHashedId } from "../auth-page/helpers";
+import { getCurrentUser, getCurrentUserGroups, userHashedId } from "../auth-page/helpers";
 import { ConfigContainer } from "../common/services/cosmos";
 import { uniqueId } from "../common/util";
 
@@ -19,60 +19,50 @@ export const CreatePrompt = async (
 ): Promise<ServerActionResponse<PromptModel>> => {
   try {
     const user = await getCurrentUser();
+    
+    // 1) Return UNAUTHORIZED if NOT admin
+    if (!user.isAdmin) {
+      return {
+        status: "UNAUTHORIZED",
+        errors: [
+          { message: "Only admins can create prompts" }
+        ],
+      };
+    }
 
-    // if (!user.isAdmin) {
-    //   return {
-    //     status: "UNAUTHORIZED",
-    //     errors: [
-    //       {
-    //         message: `Unable to create prompt`,
-    //       },
-    //     ],
-    //   };
-    // }
-
+    // 2) Construct the model normally for admins
     const modelToSave: PromptModel = {
       id: uniqueId(),
       name: props.name,
       description: props.description,
-      isPublished: user.isAdmin ? props.isPublished : false,
+      isPublished: props.isPublished, // let admin control publish
       userId: await userHashedId(),
       createdAt: new Date(),
       type: "PROMPT",
+      assignedGroups: props.assignedGroups ?? [],
     };
 
+    // 3) Validate and save as before
     const valid = ValidateSchema(modelToSave);
-
-    if (valid.status !== "OK") {
-      return valid;
-    }
+    if (valid.status !== "OK") return valid;
 
     const { resource } = await ConfigContainer().items.create<PromptModel>(
       modelToSave
     );
 
     if (resource) {
-      return {
-        status: "OK",
-        response: resource,
-      };
+      return { status: "OK", response: resource };
     } else {
       return {
         status: "ERROR",
-        errors: [
-          {
-            message: "Error creating prompt",
-          },
-        ],
+        errors: [{ message: "Error creating prompt" }],
       };
     }
   } catch (error) {
     return {
       status: "ERROR",
       errors: [
-        {
-          message: `Error creating prompt: ${error}`,
-        },
+        { message: `Error creating prompt: ${error}` }
       ],
     };
   }
@@ -82,16 +72,35 @@ export const FindAllPrompts = async (): Promise<
   ServerActionResponse<Array<PromptModel>>
 > => {
   try {
+    const userId = await userHashedId();
+    const user = await getCurrentUser();
+    const userGroups = await getCurrentUserGroups(user.accessToken!);
+    
     const querySpec: SqlQuerySpec = {
-      query: "SELECT * FROM root r WHERE r.type=@type AND r.userId=@userId",
+      query: `
+        SELECT * FROM r
+        WHERE r.type = @type
+          AND (
+            (r.isPublished = @isPublished AND EXISTS (
+              SELECT VALUE g FROM g IN r.assignedGroups
+              WHERE ARRAY_CONTAINS(@userGroups, g)
+            ))
+            OR r.userId = @userId
+          )
+      `,
       parameters: [
-        {
-          name: "@type",
-          value: PROMPT_ATTRIBUTE,
+        { name: "@type", 
+          value: PROMPT_ATTRIBUTE 
         },
-        {
-          name: "@userId",
-          value: await userHashedId(),
+        { 
+          name: "@isPublished",
+          value: true 
+        },
+        { name: "@userGroups",
+          value: userGroups 
+        },
+        { name: "@userId", 
+          value: userId 
         },
       ],
     };
@@ -218,60 +227,62 @@ export const UpsertPrompt = async (
   promptInput: PromptModel
 ): Promise<ServerActionResponse<PromptModel>> => {
   try {
-    const promptResponse = await EnsurePromptOperation(promptInput.id);
+    const user = await getCurrentUser();
 
-    if (promptResponse.status === "OK") {
-      const { response: prompt } = promptResponse;
-      const user = await getCurrentUser();
-
-      const modelToUpdate: PromptModel = {
-        ...prompt,
-        name: promptInput.name,
-        description: promptInput.description,
-        isPublished: user.isAdmin
-          ? promptInput.isPublished
-          : prompt.isPublished,
-        createdAt: new Date(),
-      };
-
-      const validationResponse = ValidateSchema(modelToUpdate);
-      if (validationResponse.status !== "OK") {
-        return validationResponse;
-      }
-
-      const { resource } = await ConfigContainer().items.upsert<PromptModel>(
-        modelToUpdate
-      );
-
-      if (resource) {
-        return {
-          status: "OK",
-          response: resource,
-        };
-      }
-
+    // 1) Block non-admins from upserting
+    if (!user.isAdmin) {
       return {
-        status: "ERROR",
+        status: "UNAUTHORIZED",
         errors: [
-          {
-            message: "Error updating prompt",
-          },
+          { message: "Only admins can update prompts" }
         ],
       };
     }
 
-    return promptResponse;
+    // 2) Ensure the prompt actually exists
+    const promptResponse = await FindPromptByID(promptInput.id);
+    if (promptResponse.status !== "OK") {
+      return promptResponse;
+    }
+    const existingPrompt = promptResponse.response;
+
+    // 3) Build the updated model
+    const modelToUpdate: PromptModel = {
+      ...existingPrompt,
+      name: promptInput.name,
+      description: promptInput.description,
+      isPublished: promptInput.isPublished,  // admin controls publish
+      createdAt: new Date(),
+      assignedGroups: promptInput.assignedGroups ?? existingPrompt.assignedGroups,
+    };
+
+    // 4) Validate and save
+    const validationResponse = ValidateSchema(modelToUpdate);
+    if (validationResponse.status !== "OK") {
+      return validationResponse;
+    }
+
+    const { resource } = await ConfigContainer().items.upsert<PromptModel>(
+      modelToUpdate
+    );
+
+    if (resource) {
+      return { status: "OK", response: resource };
+    }
+    return {
+      status: "ERROR",
+      errors: [{ message: "Error updating prompt" }],
+    };
   } catch (error) {
     return {
       status: "ERROR",
       errors: [
-        {
-          message: `Error updating prompt: ${error}`,
-        },
+        { message: `Error updating prompt: ${error}` }
       ],
     };
   }
 };
+
 
 const ValidateSchema = (model: PromptModel): ServerActionResponse => {
   const validatedFields = PromptModelSchema.safeParse(model);
