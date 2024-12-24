@@ -13,6 +13,7 @@ class PromptState {
     type: "PROMPT",
     isPublished: false,
     userId: "",
+    assignedGroups: [],
   };
 
   public errors: string[] = [];
@@ -75,6 +76,7 @@ export const addOrUpdatePrompt = async (
 };
 
 export const FormDataToPromptModel = (formData: FormData): PromptModel => {
+  const assignedGroups = formData.getAll('assignedGroups') as string[];
   return {
     id: formData.get("id") as string,
     name: formData.get("name") as string,
@@ -83,5 +85,6 @@ export const FormDataToPromptModel = (formData: FormData): PromptModel => {
     userId: "", // the user id is set on the server once the user is authenticated
     createdAt: new Date(),
     type: PROMPT_ATTRIBUTE,
+    assignedGroups: assignedGroups,
   };
 };

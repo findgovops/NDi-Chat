@@ -22,4 +22,5 @@ export const PromptModelSchema = z.object({
   isPublished: z.boolean(),
   userId: z.string(),
   type: z.literal(PROMPT_ATTRIBUTE),
+  assignedGroups: z.array(z.string()),
 });
