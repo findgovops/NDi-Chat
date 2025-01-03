@@ -26,29 +26,13 @@ export const CitationSlider: FC<SliderProps> = (props) => {
   const [node, formAction] = useFormState(onCitationClick, null);
 
   return (
-    <form>
-      <input type="hidden" name="id" value={props.id} />
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="outline" size="sm" formAction={formAction} type="submit">
-            {props.index}
-          </Button>
-        </SheetTrigger>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>Citation</SheetTitle>
-          </SheetHeader>
-          <ScrollArea>
-            <div>{node}</div>
-          </ScrollArea>
-          {/* If you want a "View Source" link: */}
-          {props.sourceUrl && (
-            <a href={props.sourceUrl} target="_blank" rel="noopener noreferrer">
-              View Source
-            </a>
-          )}
-        </SheetContent>
-      </Sheet>
-    </form>
+    <a
+      href={props.sourceUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ color: "blue", textDecoration: "underline" }}
+    >
+      {props.name}
+    </a>
   );
 };
