@@ -35,6 +35,7 @@ export const PromptHero = () => {
             isPublished: false,
             type: "PROMPT",
             userId: "",
+            assignedGroups: [],
           })
         }
       />
@@ -63,6 +64,7 @@ Generate a response with the following points:
             isPublished: false,
             type: "PROMPT",
             userId: "",
+            assignedGroups: [],
           })
         }
       />

@@ -15,6 +15,7 @@ interface SliderProps {
   name: string;
   index: number;
   id: string;
+  sourceUrl: string;
 }
 
 export const CitationSlider: FC<SliderProps> = (props) => {
@@ -29,22 +30,23 @@ export const CitationSlider: FC<SliderProps> = (props) => {
       <input type="hidden" name="id" value={props.id} />
       <Sheet>
         <SheetTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            formAction={formAction}
-            type="submit"
-          >
+          <Button variant="outline" size="sm" formAction={formAction} type="submit">
             {props.index}
           </Button>
         </SheetTrigger>
-        <SheetContent className="min-w-[480px] sm:w-[540px] flex flex-col">
+        <SheetContent>
           <SheetHeader>
             <SheetTitle>Citation</SheetTitle>
           </SheetHeader>
-          <ScrollArea className="flex-1 flex -mx-6">
-            <div className="px-6 whitespace-pre-wrap">{node}</div>
+          <ScrollArea>
+            <div>{node}</div>
           </ScrollArea>
+          {/* If you want a "View Source" link: */}
+          {props.sourceUrl && (
+            <a href={props.sourceUrl} target="_blank" rel="noopener noreferrer">
+              View Source
+            </a>
+          )}
         </SheetContent>
       </Sheet>
     </form>
