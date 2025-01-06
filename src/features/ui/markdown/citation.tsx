@@ -41,9 +41,7 @@ export const Citation: FC<Props> = ({ items, extensions }) => {
                 {/* In practice, you might filter or find the matching extension
                     if 'name' matches. Right now, we just show *all* extensions
                     for each citation. */}
-                {extensions
-                ?.filter((extension) => extension.name === citationObj.name)
-                .map((extension) => (
+                {extensions?.map((extension) => (
                   <CitationSlider
                     key={extension.id}
                     id={extension.id}
