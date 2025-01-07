@@ -47,7 +47,7 @@ export const Citation: FC<Props> = ({ items, extensions }) => {
                     id={extension.id}
                     name={extension.name}
                     index={i}
-                    sourceUrl={extension.link}
+                    sourceUrl="https://example.com"
                   />
                 ))}
               </div>
