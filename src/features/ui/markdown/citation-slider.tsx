@@ -24,6 +24,8 @@ export const CitationSlider: FC<SliderProps> = (props) => {
   if (!onCitationClick) throw new Error("onCitationClick is null");
 
   const [node, formAction] = useFormState(onCitationClick, null);
+  
+  console.log("CitationSlider =>", props.name, props.sourceUrl);
 
   return (
     <a
@@ -35,4 +37,5 @@ export const CitationSlider: FC<SliderProps> = (props) => {
       {props.name}
     </a>
   );
+  
 };
