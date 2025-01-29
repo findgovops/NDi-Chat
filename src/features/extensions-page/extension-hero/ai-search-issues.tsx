@@ -65,7 +65,7 @@ export const AISearch: React.FC = () => {
     },
     "description": "You must use this to search for content based on user questions."
     }`,
-          endpoint: `https://ndichatenvsearchqkl6lyswcexbe.search.windows.net/indexes/${indexSearch}/docs/search?api-version=2024-07-01`,
+          endpoint: `https://${process.env.AZURE_SEARCH_NAME}.search.windows.net/indexes/${indexSearch}/docs/search?api-version=2024-07-01`,
           id: uniqueId(),
           endpointType: 'POST',
           isOpen: false,
