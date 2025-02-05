@@ -12,6 +12,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read #This is required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
@@ -23,7 +25,6 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          cd src
           npm install
           npm run build --if-present
           npm run test --if-present
@@ -60,4 +61,4 @@ jobs:
           app-name: 'ndichatenv-webapp-qkl6lyswcexbe'
           slot-name: 'test'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5269EC9CDFD945A695306AD439C5EC7C }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_48A26B7F8C084EA6BF6DBC800D879DEF }}
