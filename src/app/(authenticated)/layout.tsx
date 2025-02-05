@@ -18,26 +18,19 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // 1. Retrieve the server-side session
+  // 1. Check if user is logged in at all
   const session = await getServerSession();
   if (!session) {
-    return redirect("/login"); 
+    return redirect("/login");
   }
 
-  // 2. Fetch group membership for the authenticated user
+  // 2. Enforce group membership
   const groups = await getCurrentUserGroups(session.accessToken!);
-  const requiredGroup = `${process.env.NDI_USER_GROUP}`;
-  if (!groups.includes(requiredGroup)) {
+  const requiredGroup = process.env.NDI_USER_GROUP; // e.g. "11111111-2222-3333-4444-555555555555"
+  if (!groups.includes(requiredGroup!)) {
     return redirect("/unauthorized");
   }
 
-  // 3. If user is authorized, render children
-  return (
-    <AuthenticatedProviders>
-      <div className={cn("flex flex-1 items-stretch")}>
-        <MainMenu />
-        <div className="flex-1 flex">{children}</div>
-      </div>
-    </AuthenticatedProviders>
-  );
+  // 3. If user is in the group, render children
+  return <>{children}</>;
 }
