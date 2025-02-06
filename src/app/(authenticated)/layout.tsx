@@ -13,24 +13,19 @@ export const metadata = {
   description: AI_NAME,
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // 1. Check if user is logged in at all
-  const session = await getServerSession();
-  if (!session) {
-    return redirect("/login");
-  }
-
-  // 2. Enforce group membership
-  const groups = await getCurrentUserGroups(session.accessToken!);
-  const requiredGroup = process.env.NDI_USER_GROUP; // e.g. "11111111-2222-3333-4444-555555555555"
-  if (!groups.includes(requiredGroup!)) {
-    return redirect("/unauthorized");
-  }
-
-  // 3. If user is in the group, render children
-  return <>{children}</>;
+  return (
+    <AuthenticatedProviders>
+      <div className={cn("flex flex-1 items-stretch")}>
+        <MainMenu />
+        <div className="flex-1 flex">
+          {children}
+          </div>
+      </div>
+    </AuthenticatedProviders>
+  );
 }
