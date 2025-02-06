@@ -43,8 +43,7 @@ export const getCurrentUserGroups = async (accessToken: string): Promise<string[
       .filter((group: any) => group['@odata.type'] === '#microsoft.graph.group')
       .map((group: any) => group.id);
 
-    console.log("Fetched groups:", groupIds);
-    
+
     return groupIds;
   } catch (error) {
     console.error('Error fetching user groups:', error);
