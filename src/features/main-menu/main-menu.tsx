@@ -16,9 +16,9 @@ import {
   Sheet,
   VenetianMask,
   BookOpenText,
-  Shield
+  Shield,
+  Bot
 } from "lucide-react";
-import { getCurrentUser } from "../auth-page/helpers";
 import { MenuLink } from "./menu-link";
 import { UserProfile } from "./user-profile";
 import { useSession } from "next-auth/react";
@@ -49,6 +49,11 @@ export const MainMenu = () => {
           <MenuItem tooltip="extensions">
             <MenuLink href="/extensions" ariaLabel="Go to the Extensions configuration page">
               <PaintBucket {...menuIconProps} />
+            </MenuLink>
+          </MenuItem>
+          <MenuItem tooltip="agents">
+            <MenuLink href="/agents" ariaLabel="Go to the Agent page">
+              <Bot {...menuIconProps} />
             </MenuLink>
           </MenuItem>
           <MenuItem tooltip="prompts">
